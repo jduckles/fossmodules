@@ -1,0 +1,865 @@
+latex input: mmd-memoir-header
+Title: GRASS GIS Tutorial
+Subtitle: Getting started with GRASS
+Author: Jonah M. Duckles
+Affiliation: The University of Oklahoma
+Copyright: 2011 Jonah M. Duckles
+latex mode: beamer
+LaTeX XSLT: beamer
+base header level: 1 
+Event: Learning GRASS Fall 2011
+Date: September 22, 2011
+Theme: keynote-gradient
+latex input: mmd-memoir-begin-doc
+latex footer: mmd-memoir-footer
+
+
+# GRASS GIS Session 1 #
+
+## System Setup ##
+
+### Overview ###
+While GRASS can be installed on your local machine, it really shines when used on high-end servers with fast disk and large amounts of memory.  This will also simplify setup as we won't need to build a new GRASS Location for each user.
+
+
+
+### Running GRASS ### 
+
+    [4x4@gproc0 ~]$ grass64 /data/grass/usa/4x4
+
+### Testing the Display ###
+
+    d.mon x0
+    g.region rast=ok09_aw_cdl@CDL
+    d.rast ok09_aw_cdl@CDL
+    d.vect us_counties fcolor=none type=area color=gray
+
+![X Display](./images/x_display.png)
+
+### The GRASS Database ### 
+![The GRASS Database](./images/grassdb.png)
+
+
+## Quick GIS Review ##
+
+### Vector Data ###
+* Points
+* Polylines
+* Polygons
+* Examples, GPS waypoints, stream centerlines, census tracts, county boundaries.
+
+Each of these types describes vector points in space.  Points are unconnected, Polylines and Polygons are groups of connected Points.
+
+### Attribute Data ### 
+* Tabular data related to each unique vector feature
+* Grass allows this data to sit in one of several DB backends
+* Data type of columns can matter for certain GRASS tools
+
+### Raster Data ###
+* A grid of rows and collums
+* Each grid cell has a numeric value assigned
+* Examples, elevation, temperature, land-cover, spectral reflectance etc.
+
+### What is GRASS ###
+This description is valid for GRASS `<` 6.x:
+
+At the most basic level GRASS is a collection of UNIX commands which share a common data types and some environment assumptions.
+
+* Specially configured BASH environment
+* g. - General Commands
+* r. - Raster Commands
+* v. - Vector Commands
+* i. - imagery commands
+* db. - databaase commands
+* m. - misc
+* d. - display
+
+FYI: In GRASS 7 much of this will be accessed from within Python, not BASH
+
+### BASH Environment ###
+Set's your GIS Location and manages current region.  It is a fully capable bash shell.
+
+Power Users: Note that each GRASS Region has its on `.bashrc` and `.bash_history` which may cause some confusion
+
+### GRASS Location ###
+
+The easiest way to define a location is to give GRASS a georefernced GIS file to start from. 
+
+For more on setting up a location, see Section 3.2 of [Neteler2008](http://www.springerlink.com/content/978-0-387-35767-6/)
+
+In this tutorial we'll be using a cyberCommons Virtual Server which already has a few datasets available in it.
+
+
+### Example Command ###
+`r.in.gdal --help`
+
+![r.in.gdal help](./images/r_in_gdal.png) 
+
+
+
+### Help on Commands ###
+
+Short-form help: `r.in.gdal --help`
+
+or 
+
+Long-form help: `man r.in.gdal`
+
+Long-form is mostly equivalent to content in [GRASS Manual](http://grass.osgeo.org/grass64/manuals/html64_user/index.html), but Manual sometimes has pictures and links to external references.
+
+
+### Strengths of GRASS ###
+* Grass is best at raster analysis.
+* Vector analysis in GRASS requires input vectors to be topologically sound (no overlapping polygons)
+* Analysis can be easily limited to a focused extent within a larger dataset
+* Takes advantage of mature data management structure of the GRASS database
+
+## Learning Resources ##
+
+### Online ###
+Documentation:
+
+* [Grass Online Documentation](http://grass.osgeo.org/grass64/manuals/html64_user/index.html)
+
+Online Support and help:
+
+* [Grass Mailing Lists](http://grass.fbk.eu/community/support.php) - Grass Users is probably the best place to start
+* [Grass at gis Stackexchange](http://gis.stackexchange.com/questions/tagged/grass)
+
+### Books ###
+On OU campus this book is available in PDF from the library:
+
+* [Open Source GIS A GRASS GIS Approach (Neteler2008)](http://www.springerlink.com/content/978-0-387-35767-6/)
+
+## Hands On Tutorial ##
+
+### A word about the GUI
+GRASS has several GUIs which have been written for it over the years.  The latest is the wxPython GUI and has come a long way.  I tend to use GRASS in a more command-line mode and my examples will show this.  If you're more comfortable with a GUI, know it is there for you to explore further.
+
+Additionally you can use Quantum-GIS as a sort of GUI front end to GRASS, using the GRASS plugin for Q-GIS.
+
+### Getting Started With Commands ### 
+
+* g. - General Commands
+* r. - Raster Commands
+* v. - Vector Commands
+* i. - imagery commands
+* db. - databaase commands
+* m. - misc
+* d. - display
+
+
+### Mapset Naming Convention ###
+* grass mapsets with CAPITAL LETTERS are products
+* grass mapsets wtih lowercase letters are personal mapsets
+
+Example:
+`MOD09Q1` is a MODIS product, `SRTM` is Shuttle Radar Topography Mission Data
+while `duck7169` is my personal mapset
+
+Try: `g.mapsets -l`
+
+### Mapset Search Path ### 
+Try:
+
+    g.mapsets -p
+    g.mapsets addmapset=MOD09Q1
+    g.region align=MOD09Q1.A2011105_ndvi
+    d.rast MOD09Q1.A2011105_ndvi
+    g.mapsets removemapset=MOD09Q1
+    d.rast MOD09Q1.A2011105_ndvi@MOD09Q1
+
+If a mapset is not in your search path you can always find its data using the fully qualified name (i.e. layername@MAPSET)
+
+WARNING: If I write a script that assumes you have a mapset in your search path, and you don't, strange things will happen!
+
+### Finding Data ###
+
+To list data g.mlist is a handy command to become familar with:
+
+Try:
+
+    g.mlist rast # lists raster data
+    g.mlist vect # lists vector data
+    g.mlist rast map=MOD09Q1 # rasters in a mapset
+    g.mlist rast map=MOD09Q1 pat=MOD09Q1.A2011*
+
+    g.mlist rast map=CDL
+    g.mlist rast map=SRTM
+    g.mlist rast map=MOD09Q1
+
+    g.mlist vect map=PERMANENT
+
+
+### Regions ###
+The region in GRASS defines the analysis extent and analysis grid-size.
+
+Try: `g.region -p`
+
+### g.region ###
+        
+    projection: 99 (Albers Equal Area)
+    zone:       0
+    datum:      nad83
+    ellipsoid:  grs80
+    north:      1574890.28332296
+    south:      1172974.54542984
+    west:       -631843.76102933
+    east:       150324.25043095
+    nsres:      55.69013966
+    ewres:      55.69013966
+    rows:       7217
+    cols:       14045
+    cells:      101362765
+
+### g.region -g ### 
+Machine readable form:
+
+    n=1574890.28332296
+    s=1172974.54542984
+    w=-631843.76102933
+    e=150324.25043095
+    nsres=55.69013966
+    ewres=55.69013966
+    rows=7217
+    cols=14045
+    cells=101362765
+
+### Setting region based on a raster ###
+
+Try:
+
+    g.region rast=MOD09Q1.A2011105_ndvi@MOD09Q1
+    g.region -p
+    
+### Setting region manually ### 
+
+Try:
+
+    g.region n=1574890 s=1172974 w=-631843 e=150324
+    g.region ewres=1000 nsres=1000
+
+### Setting region with d.zoom ### 
+Try:
+
+    d.zoom
+    # Mac users will need to Opt-Click 
+    #  to simulate a Middle click
+
+### X-Setting for Opt-Click on Mac ###
+On a mac you may have to enable as setting in the X-server to allow middle clicks
+![Emulate three button mouse](./images/emulate3.png)
+
+### Saving a region ### 
+
+Try:
+
+    # Zoom in to cleveland county and save as a named region 
+    g.region save=cleveland_county
+    # To go back
+    g.region cleveland_county
+
+
+
+### r.info ###
+Information about rasters
+
+Try:
+
+    r.info us09_aw_cdl@CDL
+
+### r.stats ### 
+
+
+### d.rast ###
+
+    d.rast us09_aw_cdl@CDL
+
+    d.rast us09_aw_cdl@CDL cat=1-10
+
+### r.mapcalc ###
+Map Calclulator
+
+    # Simple
+    r.mapcalc wheat09_above0.3="if(us09_aw_cdl@CDL == 24 && \
+      MOD09Q1.A2011105_ndvi@MOD09Q1 > 0.3, 1, null())"
+
+    #  More complex
+    r.mapcalc tmp_ndvi="float(float(\
+       MOD09Q1.A2011105_sur_refl_b02@MOD09Q1_import - \
+       MOD09Q1.A2011105_sur_refl_b01@MOD09Q1_import) / \
+       float(MOD09Q1.A2011105_sur_refl_b02@MOD09Q1_import + \
+       MOD09Q1.A2011105_sur_refl_b01@MOD09Q1_import))"
+
+[Mapcalc Language Description (with examples)](http://grass.osgeo.org/gdp/raster/mapcalc-algebra.pdf)
+
+
+### Masks ### 
+In GRASS the MASK is a special raster which reduces the area which will be considered for analysis.
+
+Example:
+
+    r.mask us09_aw_cdl@CDL maskcat=24
+    g.remove MASK
+    r.mask -i us09_aw_cdl@CDL maskcat=24
+
+    # Mask is juat a map with a special name
+    r.mapcalc MASK="if(us09aw_cdl@CDL < 61, 1, null())"
+
+### r.univar ###
+
+`MASK` observant univariate statistics:
+
+Try:
+
+    r.univar MOD09Q1.A2011105_ndvi@MOD09Q1
+    g.remove MASK
+    r.univar MOD09Q1.A2011105_ndvi@MOD09Q1
+
+
+### r.series ###
+Will compute average, count, median, mode, minimum, min_raster, maximum, max_raster, stddev, range, sum, threshold, variance, diversity, slope, offset, detcoeff, quart1, quart3, perc90, quantile, skewness, kurtosis across a stack of rasters.
+
+Try: 
+
+    r.series input=MOD09Q1.A2011001_ndvi,\
+        MOD09Q1.A2011009_ndvi,\
+        MOD09Q1.A2011017_ndvi,\
+        MOD09Q1.A2011025_ndvi output=mean_ndvi
+        method=average
+
+### r.series BASH tricks ####
+
+Try:
+
+    g.mlist rast map=MOD09Q1 sep=, pat=MOD09Q1.A2011*
+    RASTERS=$(g.mlist rast map=MOD09Q1 sep=, pat=MOD09Q1.A2011*)
+    r.series input=${RASTERS} output=mean_2011 method=average
+
+## Compute a z-score ##
+
+### z-score ###
+Can be computed globally or locally, r.neighbors lets us compute a z-score based on statistics from within a neighborhood.   
+
+    z = ( response - mean ) / stddev
+
+
+### r.neighbors ###
+
+    Usage:
+     r.neighbors [-aqc] input=name output=name [method=string]
+       [size=value] [title="phrase"] [weight=string] [gauss=value]
+       [--overwrite] [--verbose] [--quiet]
+
+* [Docs](http://grass.fbk.eu/grass64/manuals/html64_user/r.neighbors.html)
+
+
+
+### NDVI ###
+
+    g.region align=MOD09Q1.A2011089_ndvi@MOD09Q1
+    d.rast MOD09Q1.A2011089_ndvi@MOD09Q1
+
+### NDVI ###
+![NDVI Image](images/ndvi_sample.png)
+
+### Compute Mean ###
+Zoom in to a small region and compute mean and stddev:
+
+    r.neighbors input=MOD09Q1.A2011089_ndvi@MOD09Q1 \
+        output=ndvi_mean method=average size=5
+    d.rast ndvi_mean
+
+### Mean ###
+
+![Neighborhood Mean](./images/ndvi_mean.png)
+
+### Compute Standard Deviation ###
+Keep region the same for this calculation 
+
+    r.neighbors input=MOD09Q1.A2011089_ndvi@MOD09Q1 \
+        output=ndvi_stddev \
+        method=average size=5
+    d.rast ndvi_stddev
+
+### Stddev ###
+
+![Neighborhood Standard Deviation](./images/ndvi_stddev.png)
+
+### Use r.mapcalc to put it all together ###
+
+    r.mapcalc z_score="(MOD09Q1.A2011089_ndvi@MOD09Q1 - 
+        ndvi_mean) / ndvi_stddev )"
+    d.rast z_score
+
+### Generalize ##
+Now lets generalize these steps to compute a z-score for any raster
+
+    local_z() {
+        INPUT_RASTER=$1
+        NEIGH=$2
+        MEAN=${INPUT_RASTER/@/_}_mean
+        STDDEV=${INPUT_RASTER/@/_}_stddev
+        r.neighbors --o input=${INPUT_RASTER} output=${MEAN} \
+            method=average size=${NEIGH}
+        r.neighbors --o input=${INPUT_RASTER} output=${STDDEV} \
+            method=stddev size=${NEIGH}
+        r.mapcalc ${INPUT_RASTER/@/_}_${NEIGH}_local_z=" \
+            (${INPUT_RASTER} - ${MEAN}) / ${STDDEV}"   }
+
+### Z-score ###
+
+![Z-score](./images/ndvi_zscore.png)
+
+### Global z-score using r.univar ###
+    
+Returns univariate statistics of a raster for the current region
+
+    r.univar MOD09Q1.A2011089_ndvi@MOD09Q1
+
+    Of the non-null cells:
+    n: 99510
+    minimum: -0.491156
+    maximum: 0.916058
+    range: 1.40721
+    mean: 0.442957
+    mean of absolute values: 0.443779
+    standard deviation: 0.135271
+    variance: 0.0182983
+    variation coefficient: 30.5382 %
+    sum: 44078.6746389593
+
+### r.univar Machine Readable ###
+
+    r.univar -g MOD09Q1.A2011089_ndvi@MOD09Q1
+    n=99510
+    null_cells=0
+    cells=99510
+    min=-0.491156458854675
+    max=0.916058421134949
+    range=1.40721487998962
+    mean=0.442957236850159
+    mean_of_abs=0.443779287028479
+    stddev=0.135271171054042
+    variance=0.0182982897183318
+    coeff_var=30.5382009369452
+    sum=44078.6746389593
+
+### Eval r.unvar -g ###
+
+    eval $(r.univar -g MOD09Q1.A2011089_ndvi@MOD09Q1)
+    # Set local variables based on output of r.univar
+    echo $stddev
+    0.135271171054042
+    echo $mean
+    0.442957236850159
+
+### Compute global Z ###
+Lets turn this into a generalized method for computing the global z-score
+
+    global_z() {
+        INPUT_RASTER=$1
+        eval $(r.univar -g ${INPUT_RASTER})
+        r.mapcalc ${INPUT_RASTER/@/_}_global_z="\
+            (${INPUT_RASTER} - ${mean} ) / ${stddev}"
+    }
+
+    global_z MOD09Q1.A2011089_ndvi@MOD09Q1
+
+
+## Scripting in BASH ##
+
+### Some Resources ###
+Practical:
+* [BASH by Example](http://www.funtoo.org/wiki/Bash_by_Example,_Part_1)
+* [Linux Fundamentals](http://www.funtoo.org/wiki/Linux_Fundamentals,_Part_1)
+* [BASH Programming Introduction](http://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO.html) - many of today's examples come from here
+* [BASH Guide for beginners](http://tldp.org/LDP/Bash-Beginners-Guide/html/)
+
+Reference:
+* `man bash`
+
+Further learning:
+* [Sed by example](http://www.funtoo.org/wiki/Sed_by_Example,_Part_1)
+* [awk by example](http://www.funtoo.org/wiki/Awk_by_Example,_Part_1)
+
+
+
+Advanced:
+* [Advanced Bash Scripting Guide](http://tldp.org/LDP/abs/html/)
+
+### Getting Started ### 
+
+Scripts:
+
+    #!/bin/bash
+    echo "Hello World
+
+Save as hello.sh, then either:
+
+    chmod +x hello.sh
+or
+
+    bash hello.sh
+
+### Lets try it ###
+
+    nano hello.sh
+
+    #!/bin/bash
+    echo "Hello World"
+
+Then Ctrl-x, y, Enter
+
+    bash hello.sh
+
+At the simplest level a BASH script is a list of commands
+
+### Redirection ###
+
+    # write stdout of a command to a file
+    ls > somefile 
+    # append stdout of a command to a file
+    ls >> somefile
+
+### pipes ###
+[Pipes](http://en.wikipedia.org/wiki/Pipeline_(Unix) ) are used to connect the output of one process to another.
+
+Example:
+    ls | grep "hello" | wc -l
+
+Three commands, `ls`, `grep`, `wc` all wired together to produce some outcome.
+
+### Variables ### 
+BASH variables are set by picking a name and assigning some value to it using an `=` operator.  Variables must be set without a space between the variable name and the value.
+
+Lets try:
+
+    nano hello.sh
+
+    #!/bin/bash          
+    STRING="Hello World!"
+    echo $STRING
+
+### Conditionals ###
+
+    #!/bin/bash
+    T1="foo"
+    T2="bar"
+    if [ "$T1" = "$T2" ]; then
+        echo expression evaluated as true
+    else
+        echo expression evaluated as false
+    fi
+
+### Command Substitution ###
+Command substitution allows the output of a command to replace the command name.
+
+Example:
+
+    echo "Today's date is $(date)."
+
+Old Notation:
+
+    echo "Today's date is `date`."
+
+### For Loops ###
+
+        #!/bin/bash
+        for i in 1 2 3 4; do
+            echo item: $i
+        done    
+
+        #!/bin/bash
+        for i in $( ls ); do
+            echo item: $i
+        done
+
+### Functions ###
+
+           #!/bin/bash 
+           function quit {
+               exit
+           }
+           function hello {
+               echo Hello!
+           }
+           hello
+           quit
+           echo foo 
+
+### Command Line Parameters ###
+
+It can be handy to accept command-line parameters from your script.  These are handled by special variables in BASH, $1,$2...$n
+
+Example:
+    #!/bin/bash
+    NAME=$1
+    echo "Hello ${NAME}"
+
+Save that script as `hello2.sh` and run with `bash hello2.sh MyName`
+
+
+## Importing Data ##
+
+### Import a Landsat Scene ###
+
+1. Go to USGS Earth Explorer and find a scene, then download it
+2. Reproject scene (if necessary) using gdal_warp
+3. Import to grass using r.in.gdal
+
+### Reproject ###
+Get current GRASS projection and store the string in a shell variable:
+
+    T_SRS=$(g.proj -j)
+
+Reproject each band (using gdalwarp) and import to GRASS:
+    
+    for band in *.TIF; do 
+        gdalwarp -t_srs "${T_SRS}" ${band} ${band/.TIF/_reproj.TIF}
+        r.in.gdal input=${band/.TIF/_reproj.TIF} output=${band/.TIF/}
+    done
+
+### Color Composites of Banded Rasters ### 
+
+Lets look at it:
+
+    g.region rast=L5028035_03520110529_B70@jduckles
+    d.rgb red=L5028035_03520110529_B30@jduckles\
+        green=L5028035_03520110529_B20@jduckles\
+        blue=L5028035_03520110529_B10@jduckles
+    d.rgb red=L5028035_03520110529_B70@jduckles\
+        green=L5028035_03520110529_B40@jduckles\
+        blue=L5028035_03520110529_B20@jduckles
+
+### Landsat 742 ###
+
+![L5 742](./images/landsat_742.png)
+
+### Compute NDVI ###
+
+    r.mapcalc L5_ndvi=" (L5028035_03520110529_B40@jduckles - \
+            L5028035_03520110529_B30@jduckles)/ \
+            (L5028035_03520110529_B40@jduckles + \
+            L5028035_03520110529_B30@jduckles)"
+    r.colors L5_ndvi color=ndvi
+
+### NDVI ###
+
+![L5NDVI May 29, 2011](./images/L5_ndvi.png)
+
+
+
+## Anomaly Analysis ##
+
+### 2011 Drought in Oklahoma ###
+
+Let's compare a spring 2011 NDVI (Julian day 105) with the previous year's 
+    
+    g.region OKTX_panhandle@jduckles # set region
+    g.region align=us09_aw_cdl@CDL
+    d.rast us09_aw_cdl@CDL
+    # assign shell variable based on pattern match 
+    g.region align=MOD09Q1.A2011105_ndvi@MOD09Q1
+    d.erase; d.rast MOD09Q1.A2011105_ndvi@MOD09Q1
+    input=$(g.mlist -rm rast map=MOD09Q1 \
+        pat="MOD09Q1.A20\(00\|01\|02\|03\|04\|05\|06\|07\|08\|09\|10\)105_ndvi"\
+        sep=,)
+    r.series input=${input} output=doy105_median method=median
+    r.mapcalc doy105_anom="doy105_median \
+                - MOD09Q1.A2011105_ndvi@MOD09Q1"
+    r.colors doy105_anom color=differences
+
+### Set Region and Look at CDL ###
+
+    g.region OKTX_panhandle@jduckles # set region
+    g.region align=us10_aw_cdl@CDL
+    d.rast us10_aw_cdl@CDL
+
+### CDL In OK/TX Panhandle ###
+
+![CDL 2010](./images/panhandle_cdl.png)
+
+### Switch to MODIS Grid alignment ### 
+
+    g.region align=MOD09Q1.A2011105_ndvi@MOD09Q1
+    d.erase; d.rast MOD09Q1.A2011105_ndvi@MOD09Q1
+
+### 2011 NDVI ###
+
+![NDVI 2011](./images/panhandle_ndvi.png)
+
+### Compare with background from last 10 years ###
+    
+    input=$(g.mlist -rm rast map=MOD09Q1 \
+        pat="MOD09Q1.A20\(00\|01\|02\|03\|04\|05\|06\|07\|08\|09\|10\)105_ndvi"\
+        sep=,)
+    r.series input=${input} output=doy105_median method=median
+    r.mapcalc doy105_anom="MOD09Q1.A2011105_ndvi@MOD09Q1 \
+                - doy105_median"
+    r.colors -n doy105_anom color=differences
+    d.rast doy105_anom
+    d.legend doy105_anom
+
+### Differences ###
+
+![Deviation from Mean](./images/panhandle_deviation.png)
+
+### Plot a temporal NDVI Trend ###
+
+    plot_ndvi() {
+        DOY=$1
+        START_YR=$2
+        END_YR=$3
+        tmp=$(mktemp) # make a temporary file for output
+        for YEAR in $(seq ${START_YR} ${END_YR}); do
+            eval $(r.univar -g MOD09Q1.A${YEAR}${DOY}_ndvi@MOD09Q1)
+            echo $YEAR $mean >> ${tmp}
+            unset mean
+        done
+        gnuplot -e "set term dumb; set key off; plot '${tmp}' using 1:2 with lines"
+        rm ${tmp}
+    }
+
+## Exploring Land Cover Maps ##
+
+### Using the CDL ###
+[Cropland data layer](http://www.nass.usda.gov/research/Cropland/SARS1a.htm) and related [Metadata](http://www.nass.usda.gov/research/Cropland/metadata/meta.htm)
+
+Produced annually by NASS.
+
+### r.stats summary ### 
+
+We can see cell counts (-c), area totals (-a), percent (-p), averaged values (-A) of an underlying raster
+
+Multiple rasters can be combined together in the input to summarize them by cross-tabulation.
+
+Example:
+
+    r.stats -an us_counties_r,us09_aw_cdl@CDL,us10_aw_cdl@CDL
+
+Will summarize by county FIPS code the cropland acreage transitions from 2009-20010 with resulting data having the form:
+    
+    FIPS,2009_cover,2010_cover,acres
+
+
+### Exploring year-to-year changes ###
+
+Show the cropland transitions from 2009-2010
+
+    r.stats -pn us09_aw_cdl@CDL,us10_aw_cdl@CDL | sort -rn -k3 | head -10
+
+
+## Bird Migration ##
+
+### Geologgers ###
+
+    [
+        {
+            "animal": "BH10_67580", 
+            "deplylat": 36.738, 
+            "deplylon": 99.793999999999997, 
+            "latitude": 36.735300000000002, 
+            "longitud": 99.800799999999995, 
+            "source": "gps", 
+            "spp": "Bar-headed Goose", 
+            "study": "Qinghai_Mar10", 
+            "thetime": "26MAR10:15:00:00", 
+            "year": 2010
+        }
+    ]
+
+[Actual Data Set](http://fire.rccc.ou.edu/mongo/db_find/eomf/gps_all/)
+   
+### Problem ###
+For each point location where bird is observed, query the vegetation index for that location.
+
+Steps:
+* Use python to turn WGS84 lat/lon points into MODIS Sinusoidal x,y
+* Run r.what at given location/times storing results back to DB
+
+[Python Script](https://github.com/ouinformatics/cybercom_tools/blob/master/eomf/bird_locs.py)
+
+### Output ###
+    [
+    {'y': '4084783.59288', 'x': '8893501.36164', 'ndvi': '0.1738', 'desc': ''}, 
+    {'y': '4084750.23436', 'x': '8893536.11559', 'ndvi': '0.1738', 'desc': ''}, 
+    {'y': '4083638.28384', 'x': '8896387.80624', 'ndvi': '-0.2', 'desc': ''}, 
+    {'y': '4084583.44178', 'x': '8893166.28254', 'ndvi': '0.1738', 'desc': ''}, 
+    {'y': '4084561.20277', 'x': '8893234.0069', 'ndvi': '0.2462', 'desc': ''}, 
+    {'y': '4084605.68079', 'x': '8893187.67269', 'ndvi': '0.1738', 'desc': ''}, 
+    {'y': '4084605.68079', 'x': '8893169.84981', 'ndvi': '0.1738', 'desc': ''}, 
+    {'y': '4084583.44178', 'x': '8893210.83985', 'ndvi': '0.1738', 'desc': ''}, 
+    {'y': '4086451.51866', 'x': '8890818.94505', 'ndvi': '0.0365', 'desc': ''}, 
+    {'y': '4084727.99535', 'x': '8893532.55083', 'ndvi': '0.1738', 'desc': ''}
+    ]
+
+## MODIS CDL Analysis ##
+
+### Resample CDL ###
+* Using `r.resamp.stats` compute the mode cover type for each MODIS pixel
+
+    r.resamp.stats --o input=ok09_aw_cdl@CDL output=ok09_aw_cdl_q1 method=mode
+
+### Look at Phenology Stats over Time ###
+
+    year=2009
+    r.mask ok09_aw_cdl_q1 maskcat=24
+    for doy in $(seq -w 1 8 365); do
+        eval $(r.univar -ge MOD09Q1.A${year}${doy}_ndvi@MOD09Q1)
+        echo ${year}${doy} $median $first_quartile $third_quartile $mean $stddev
+        unset median; unset first_quartile; unset third_quartile; unset mean; unset stddev
+    done | tee ndvi_pheno.dat
+
+    gnuplot -e "set term dumb; set key off; plot 'ndvi_pheno.dat' using 1:5 with lines"
+
+
+## Percent Cropland ##
+
+### Calculate percent of cropland ###
+    g.region rast=ok09_aw_cdl@CDL
+    r.mapcalc cropland="if(ok09_aw_cdl@CDL < 62, 1, 0)"
+    g.region align=MOD09Q1.A2010001_ndvi@MOD09Q
+    r.resamp.stats -w input=cropland output=cropland_q1 method=sum
+    eval $(r.univar -g cropland_q1)
+    r.mapcalc cropland_pct_q1="float(cropland_q1)/ ${max}"  
+
+
+## Quantum GIS ##
+
+### Intro to Qgis ###
+Quantum GIS can be a good compliment to GRASS using its GRASS plugin.
+
+![qgis](./images/qgis.png)
+
+Run QGIS from inside a grass session:
+
+    qgis & 
+
+
+### Grass Plugin ###
+You need to enable the GRASS plugin before you can use it.
+![Grass Plugin](./images/grass_plugin.png)
+
+### Grass Toolbar ###
+Once enabled you get the GRASS Toolbar
+
+![Grass toolbar](./images/grass_toolbar.png)
+
+* Open Vector
+* Open Raster
+* Create Vector
+* Edit Vector
+* Grass Tools
+* Display Region
+* Select Region
+
+### Setting Region ###
+![Setting the Region](./images/set_region.png)
+
+### Access to Grass Modules ###
+![GRASS Module Tree](./images/module_tree.png)
+
+
+
+

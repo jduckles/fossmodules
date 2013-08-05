@@ -1,0 +1,193 @@
+latex input: mmd-memoir-header
+Title: Shell Basics
+Subtitle: Getting started with Unix/Linux Shell
+Author: Jonah M. Duckles
+Affiliation: The University of Oklahoma
+Copyright: 2013 Jonah M. Duckles
+latex mode: beamer
+LaTeX XSLT: beamer
+base header level: 1 
+Event: Shell basics
+Date: September 22, 2013
+Theme: keynote-gradient
+latex input: mmd-memoir-begin-doc
+latex footer: mmd-memoir-footer
+
+
+### SSH ###
+* [PuTTy](http://www.chiark.greenend.org.uk/~sgtatham/putty/) Windows SSH Client
+* Terminal.app - Mac OS X - Located in Applications -> Utilities
+    
+    ssh -X 4x4@bison.rccc.ou.edu
+
+### CygwinX (Windows Only) ### 
+XServer Software to allow us to display outputs 
+
+* [CygwinX](http://x.cygwin.com/)
+* [Installation Steps](http://x.cygwin.com/docs/ug/setup.html#setup-cygwin-x-installing)
+
+Macs have an XServer already.
+
+Note: GRASS is fully capable of running in a head-less mode where you do not display anything at all.
+
+### X Forwarding in PuTTy ###
+![PuTTy X11 Forwarding](./images/putty_x11_forward.png)
+
+
+## Opening up a terminal ##
+
+
+
+## Great Resource ##
+
+"The Linux Command Line: A Complete Introduction"
+
+## Basic shell commands ##
+"Mouse clicks are nice, but you can't put them in a script." -- Mark Minasi
+### What is a shell? ###
+A shell is an interface to instruct an operating system.  While there is a bit of a learning curve, once you're comfortable with shell commands, there are many powerful things you can do quickly with the shell.  We're going to learn about the bash shell (Bourne Again Shell).
+
+#### Entering commands ####
+Try:
+    
+
+Show the current date and time
+
+    [me@bison ~]$ date
+    Fri Aug  2 11:46:12 CDT 2013
+
+Print a text calendar of the current month
+
+    [me@bison ~]$ cal 
+        August 2013
+    Su Mo Tu We Th Fr Sa
+                 1  2  3
+     4  5  6  7  8  9 10
+    11 12 13 14 15 16 17
+    18 19 20 21 22 23 24
+    25 26 27 28 29 30 31
+    
+Show the ammount of disk free (df) on a system
+
+    [me@bison ~]$ df -h
+
+    Filesystem            Size  Used Avail Use% Mounted on
+    /dev/mapper/sys_vg-root_lv
+                           12G  5.6G  5.5G  51% /
+    tmpfs                 7.8G     0  7.8G   0% /dev/shm
+    /dev/sda1             504M   95M  384M  20% /boot
+    /dev/mapper/sys_vg-tmp_lv
+                          197G  188M  187G   1% /tmp
+    /dev/mapper/sys_vg-var_lv
+                          2.0G  497M  1.4G  26% /var
+    panda:/home/me  142G  132G  2.9G  98% /home/me
+    panda:/export/software
+                           20G   19G  1.5G  93% /misc/software
+
+#### Command History ####
+
+    history
+
+#### Ending a Terminal Session ####
+<D-%>
+    exit
+
+    Ctrl-D
+
+### What is a filesystem? ### 
+Filesystems are a way to store and retrieve files on a computer.  We'll be using a UNIX filesystem which has a few differences from the Windows filesystem you may be familiar with.  All files and directories are organized as branches of the *root directory* or `/`.  When you log into a unix system you're usually placed in your *home directory* `/home/username`, where `username` is your username.  Filesystem paths are just 
+
+#### The filesystem tree ####
+
+When you log into a system you're dropped into your *home directory*.  To seet he full path to your home directory
+    
+    [me@bison ~]$ pwd
+    /home/me
+
+
+### Environment variables ### 
+When you login to a remote system over SSH (Secure SHell), you're dropped at a command prompt.  Something like:
+
+    $ ssh bison.rccc.ou.edu
+    Last login: Fri Jun 12 09:34:07 2012 from ip-129-15-40-57.rccc.ou.edu
+    [jduckles@bison ~]$
+
+This shell has a set of variables set, known as *the environment*.  To see all of the varibles that are set in the environment we can run the `set` command.
+
+Example:
+    
+    name="Jonah Duckles"
+    echo $name
+
+Variables can be set by `variablename=somevalue`.  And recalled by reffering to them with a `$` before their name.
+
+** Activity: Set a variable called `name` to your name **
+
+### Running programs ###
+To run a program, you type its name.  If the program is found somewhere in the folders listed in `$PATH` the program is executed.
+
+Lets look at our `$PATH`:
+    
+    echo $PATH
+
+Now lets run a simple command which lists the files in the current directory:
+
+    ls 
+
+To find the path of the program that is running type:
+    
+    which <program name>
+    # Example:
+    which ls
+
+To see your path:
+    
+    echo $PATH
+
+** Activity: Try to figure out the runtime location of command `R` used to launch the R statistical system . **
+
+
+#### Documentation ####
+Every linux/unix system will typically have online documentation for each command.  Typically you access documentation for a command by typing:
+
+    man <command name>
+
+Example:
+    
+    man ls
+
+** Activity: Skim through the documentation for ls and see if you can figure out how to sort `ls` output by modification time. ** 
+
+
+### Moving around the filesystem in the shell ###
+
+* `cd` - change directory.  Lets you move around the file system hierarchy
+* `ls` - list directory contents.  Lets you show a list of files in the current directory, or get more information about a file.
+* `file` - interogates and tells you the file type of a file
+* `touch` - change the file last accessed timestamp if file exists, or creates a file that does not yet exist
+* `du` - show disk usage of files and subdirectories of current directory 
+* `df` - shows the ammount of disk free on the system, best used with the `-h` option to make result easy to read.  
+
+### Editors ###
+* nano
+* vi/vim
+* emacs
+
+Nano is pretty easy to use, and shows you documentation on the screen, so we'll be using it for this class when we need to edit a file.  If you have experience with vi/vim or emacs, feel free to use what you're comfortable with.
+
+** Activity: Create a file named `test` with the text `Hello world` in it **
+
+### Setting variables ### 
+Bash variables are easy to set at any shell prompt:
+
+    MYNAME=Someguy
+
+This stores the text to the right of the `=` as a variable named `MYNAME`.  It can then be retrieved at a later time by prefixing it with `$`.  So we could do something like:
+    
+    echo "My name is: $MYNAME"
+
+### Redirection ###
+
+### Other Resources ###
+
+
