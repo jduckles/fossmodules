@@ -1,4 +1,4 @@
-latex input: mmd-memoir-header
+latex input: mmd-beamer-header
 Title: Shell Basics
 Subtitle: Getting started with Unix/Linux Shell
 Author: Jonah M. Duckles
@@ -10,17 +10,21 @@ base header level: 1
 Event: Shell basics
 Date: September 22, 2013
 Theme: keynote-gradient
-latex input: mmd-memoir-begin-doc
-latex footer: mmd-memoir-footer
+latex input: mmd-beamer-begin-doc
+latex footer: mmd-beamer-footer
 
 
-### SSH ###
+## Overview
+
+Much of the content in the first week will be drawn from the excellent "Software Carpentry" (software-carpentry.org) Lessons on the Unix Shell.
+
+### SSH 
 * [PuTTy](http://www.chiark.greenend.org.uk/~sgtatham/putty/) Windows SSH Client
 * Terminal.app - Mac OS X - Located in Applications -> Utilities
     
     ssh -X 4x4@bison.rccc.ou.edu
 
-### CygwinX (Windows Only) ### 
+### CygwinX (Windows Only) 
 XServer Software to allow us to display outputs 
 
 * [CygwinX](http://x.cygwin.com/)
@@ -30,24 +34,35 @@ Macs have an XServer already.
 
 Note: GRASS is fully capable of running in a head-less mode where you do not display anything at all.
 
-### X Forwarding in PuTTy ###
+### X Forwarding in PuTTy 
 ![PuTTy X11 Forwarding](./images/putty_x11_forward.png)
 
 
-## Opening up a terminal ##
+### Opening up a terminal 
+
+Using finder navigate to Applications --> Utilities and find ![Terminal](./images/Terminal.png)
 
 
-
-## Great Resource ##
+###  Great Resource
 
 "The Linux Command Line: A Complete Introduction"
 
-## Basic shell commands ##
-"Mouse clicks are nice, but you can't put them in a script." -- Mark Minasi
-### What is a shell? ###
+![Linlux Command Line](./images/LinuxCommandLine.png)
+
+Available to borrow from my office.
+
+### Why a shell? 
+
+"Mouse clicks are nice, but you can't put them in a script." -- Mark Minasi (ht @JohnDCook)
+
+### What is a shell? 
 A shell is an interface to instruct an operating system.  While there is a bit of a learning curve, once you're comfortable with shell commands, there are many powerful things you can do quickly with the shell.  We're going to learn about the bash shell (Bourne Again Shell).
 
-#### Entering commands ####
+![Shell](./images/shell.png)
+
+## Hands On
+
+### Entering commands 
 Try:
     
 
@@ -84,13 +99,15 @@ Show the ammount of disk free (df) on a system
     panda:/export/software
                            20G   19G  1.5G  93% /misc/software
 
-#### Command History ####
+### Command History 
 
     history
 
-#### Ending a Terminal Session ####
-<D-%>
+### Ending a Terminal Session 
+    
     exit
+
+or
 
     Ctrl-D
 
@@ -121,7 +138,7 @@ Example:
 
 Variables can be set by `variablename=somevalue`.  And recalled by reffering to them with a `$` before their name.
 
-** Activity: Set a variable called `name` to your name **
+**Activity: Set a variable called `name` to your name**
 
 ### Running programs ###
 To run a program, you type its name.  If the program is found somewhere in the folders listed in `$PATH` the program is executed.
@@ -144,7 +161,7 @@ To see your path:
     
     echo $PATH
 
-** Activity: Try to figure out the runtime location of command `R` used to launch the R statistical system . **
+**Activity: Try to figure out the runtime location of command `R` used to launch the R statistical system .**
 
 
 #### Documentation ####
@@ -156,7 +173,7 @@ Example:
     
     man ls
 
-** Activity: Skim through the documentation for ls and see if you can figure out how to sort `ls` output by modification time. ** 
+**Activity: Skim through the documentation for ls and see if you can figure out how to sort `ls` output by modification time.** 
 
 
 ### Moving around the filesystem in the shell ###
@@ -175,7 +192,7 @@ Example:
 
 Nano is pretty easy to use, and shows you documentation on the screen, so we'll be using it for this class when we need to edit a file.  If you have experience with vi/vim or emacs, feel free to use what you're comfortable with.
 
-** Activity: Create a file named `test` with the text `Hello world` in it **
+**Activity: Create a file named `test` with the text `Hello world` in it**
 
 ### Setting variables ### 
 Bash variables are easy to set at any shell prompt:
