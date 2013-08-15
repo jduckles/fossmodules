@@ -1,0 +1,94 @@
+latex input: mmd-memoir-header
+Title: Intro to R
+Subtitle: Getting started with R
+Author: Jonah M. Duckles
+Affiliation: The University of Oklahoma
+Copyright: 2013 Jonah M. Duckles
+latex mode: beamer
+LaTeX XSLT: beamer
+base header level: 1 
+Event: Learning R Fall 2013
+Date: September 1, 2013
+Theme: keynote-gradient
+latex input: mmd-memoir-begin-doc
+latex footer: mmd-memoir-footer
+
+
+
+
+### R History ###
+
+### Ways to run R ###
+
+#### Command Line ####
+Run the R intepreter from the command line:
+
+    R
+    
+    R version 3.0.0 (2013-04-03) -- "Masked Marvel"
+    Copyright (C) 2013 The R Foundation for Statistical Computing
+    Platform: x86_64-apple-darwin10.8.0 (64-bit)
+
+    R is free software and comes with ABSOLUTELY NO WARRANTY.
+    You are welcome to redistribute it under certain conditions.
+    Type 'license()' or 'licence()' for distribution details.
+
+      Natural language support but running in an English locale
+
+    R is a collaborative project with many contributors.
+    Type 'contributors()' for more information and
+    'citation()' on how to cite R or R packages in publications.
+
+    Type 'demo()' for some demos, 'help()' for on-line help, or
+    'help.start()' for an HTML browser interface to help.
+    Type 'q()' to quit R.
+
+    >
+
+* Advantages
+    * Can be run nearly anywhere (servers, clusters, etc)
+    * lightweight on system resources
+    * useful for testing
+* Disadvantages 
+    * No gui, or detached gui
+    * Not an integrated development environment
+
+#### RStudio ####
+[RStudio](http://www.rstudio.com/) is a development environment for R that is very easy to use.
+
+![RStudio Desktop](./images/rstudio-windows.png)
+
+* Advantages
+    * Easy to use
+    * Integrated help, editor, etc
+    * Debugging and data object viewing
+* Disadvantages
+    * Older and less updated packages sometimes run unexpectedly
+
+#### RStudio Server ####
+There is also an RStudio version that runs via a modern web browser (Chrome, Safari, Firefox).  This is how we'll be using RStudio in this class. 
+
+* Advantages
+    * Same as Rstudio Desktop
+    * Able to run your code on servers with many CPUs and large memory. 
+
+
+### A bit of history ###
+S -> SPlus -> R
+
+
+
+### Limitations of R ###
+Everything is in memory.
+
+### Setting Variables ###
+
+
+### References ###
+* R in a nutshell
+* R Cookbook
+* Use R! Series at Springer
+
+
+### Advanced ###
+[Learn X in Y minutes where X=R](Lhttp://learnxinyminutes.com/docs/r) 
