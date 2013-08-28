@@ -1,0 +1,71 @@
+## Getting started with SSH and X Windows
+In order to prepare for our first lessons you'll need to get your laptop preapred for running both SSH and X Windows.  If you have trouble with this, an alternative it use one of the laptops available in the CORE classroom which already have the necessary tools installed.  **Please try to get these tools installed before you come to class Tuesday afternoon**
+
+### Windows
+
+#### X Server
+On windows there are several options for both SSH and remote X display.  Two options are [XMing](http://www.straightrunning.com/XmingNotes/) and [Cygwin\X](http://x.cygwin.com/).
+
+Once you have the XServer installed you'll need an SSH client utility.  
+
+#### SSH
+PuTTY is a popular and full-featured open source SSH client for windows.  You can get it [here](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html) by downloading and running the PuTTY installer.
+
+Open PuTTY and configure the server bison.rccc.ou.edu as a Saved Sesstion:
+
+![PuTTY Host Name](./images/PuTTY_Configuration_a.png)
+
+Then Setup X window forwarding:
+
+![PuTTY X11 Forwarding](./images/PuTTY_Configuration_b.png)
+
+Now give the configuration a name:
+
+![PuTTY Save Config](./images/PuTTY_Configuration_c.png)
+
+And Save it:
+
+![PuTTY Save Named Config](./images/PuTTY_Configuration_d.png)
+
+### Mac OS X 
+
+#### XQuartz
+XQuartz is a program installed on your Mac which will alow you to display graphical programs installed on remote computers on your computer.  You'll need to download the latest version from [Xquartz](http://xquartz.macosforge.org/landing/).  Install by double-clicking `XQuartz.pkg` inside the download `.dmg`
+
+
+#### Terminal.app
+Terminal.app is a program you can use to interact with your mac shell (bash).  The shell is a command-line environment where you can enter commands that control your computer.  We will be using the Terminal.app in this tutorial to run SSH (Secure SHell).  SSH is a program which allows us to securely connect to a remote computer over the network.
+
+The most basic way to use SSH is as follows:
+
+    ssh username@remotehost.domain.edu
+
+This tells the SSH program that we would like to initiate an SSH connection as `username` on the shost `remotehost.domain.edu`
+
+So in our case we'll be using a remote host called `bison.rccc.ou.edu` and our username will be our `4x4`, so:
+
+    ssh 4x4@bison.rccc.ou.edu
+
+However we'd like to be able to display graphical X windows programs from the remote host as well, so we'll need to add a couple of options to `ssh`.  To forward X windows we need to add `-X` and to make sure our connection is using on-the fly compression to speed things up we'll add `-C`.  So putting that all together we can do:
+
+    ssh -XC 4x4@bison.rccc.ou.edu
+
+where `4x4` is your own `4x4`
+
+You will then be prompted for your password.  Enter it and you'll be dropped at a prompt like:
+
+    Last login: Mon Aug 19 10:17:40 2013 from wireless.rccc.ou.edu
+    [4x4@bison ~]$
+
+
+### Class on Tuesday
+I'll be around early before class on tuesday and I'm always available by email if you need my help. jduckles@ou.edu
+
+
+
+
+
+
+
+
+

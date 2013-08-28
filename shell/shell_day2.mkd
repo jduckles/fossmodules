@@ -1,0 +1,96 @@
+### Week 2 Bash/Linux
+
+Week 2 slides
+
+
+### Conditionals
+
+    a=1
+    b=0
+    if [[ $a -gt $b ]] ; then
+        echo "a is bigger than b"
+    elif [[ $b -gt  $a ]]; then 
+        echo "b is bigger than a"
+    else
+        echo "Something crazy is going on"
+    fi
+
+
+### Integer comparison operators
+
+Available comparisons are:
+
+* `-gt` - greater than
+* `-ge` - greater than or equal to
+* `-lt` - less than
+* `-le` - less than or equal to
+* `-eq` - equal to
+* `-ne` - not equal to
+
+Note that these only work in **integers**
+
+
+### Functions
+Functions are a way to quickly and interactively group a set of commands.  They are created by following a word with `()` and putting the commands you want between `{}` after the declaration.
+
+Example:
+
+    name=Jonah
+    myfunction() { echo "My name is $name"; }
+
+    myfunction
+
+### Function parameters
+
+    myfunction2() { 
+        name=$1;
+        echo "My name is $name"
+    }
+
+    myfunction2 Gerard
+
+`$1` is a special variable meaning the first command line argument (first string after the space when calling the function)
+
+### Function parameters
+
+    myfunction3() { 
+        name=$1;
+        nice=$2;
+        if [ $nice == "yes" ]; then
+            echo "Hello $name, nice to see you";
+        elif [ $nice == "no" ]; then
+            echo "Hello $name, please go away";
+        else
+            echo "Hi $name, I'm not really sure if your nice or not";
+        fi
+    }
+
+    myfunction3 Gerald yes
+    myfunction3 Gerald no
+    myfunction3 Gerald foo
+
+### Loops
+Loops allow you repeat some task with slight variation.  
+
+#### Examples
+* For example, you might want to keep running a set of commands until a certain environment variable reaches a certain state.
+* Or you might want to loop over a list of files in a directory and perform some operation on them.
+
+### while loop
+
+    a=0;
+    while [[ $a -lt 10 ]]; do 
+        echo "I'm running"; 
+        a=$a+1; 
+     done
+
+### for
+    
+    for name in james mike misha kim jeff aaron fred; do
+        echo "==== begin $name ====";
+        echo "The current record's name is: $name";
+        echo "==== end $name ====";
+    done;
+
+
+

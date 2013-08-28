@@ -1,18 +1,3 @@
-latex input: mmd-memoir-header
-Title: Intro to R
-Subtitle: Getting started with R
-Author: Jonah M. Duckles
-Affiliation: The University of Oklahoma
-Copyright: 2013 Jonah M. Duckles
-latex mode: beamer
-LaTeX XSLT: beamer
-base header level: 1 
-Event: Learning R Fall 2013
-Date: September 1, 2013
-Theme: keynote-gradient
-latex input: mmd-memoir-begin-doc
-latex footer: mmd-memoir-footer
-
 
 
 
@@ -20,31 +5,7 @@ latex footer: mmd-memoir-footer
 
 ### Ways to run R
 
-#### Command Line 
-Run the R intepreter from the command line:
-
-    R
-    
-    R version 3.0.0 (2013-04-03) -- "Masked Marvel"
-    Copyright (C) 2013 The R Foundation for Statistical Computing
-    Platform: x86_64-apple-darwin10.8.0 (64-bit)
-
-    R is free software and comes with ABSOLUTELY NO WARRANTY.
-    You are welcome to redistribute it under certain conditions.
-    Type 'license()' or 'licence()' for distribution details.
-
-      Natural language support but running in an English locale
-
-    R is a collaborative project with many contributors.
-    Type 'contributors()' for more information and
-    'citation()' on how to cite R or R packages in publications.
-
-    Type 'demo()' for some demos, 'help()' for on-line help, or
-    'help.start()' for an HTML browser interface to help.
-    Type 'q()' to quit R.
-
-    >
-
+### Why use R?
 * Advantages
     * Can be run nearly anywhere (servers, clusters, etc)
     * lightweight on system resources
@@ -52,6 +13,8 @@ Run the R intepreter from the command line:
 * Disadvantages 
     * No gui, or detached gui
     * Not an integrated development environment
+
+
 
 #### RStudio
 [RStudio](http://www.rstudio.com/) is a development environment for R that is very easy to use.
@@ -82,18 +45,108 @@ S -> SPlus -> R
 Everything is in memory.
 
 ### Setting Variables 
-
+Assignments in R can be done with `<-` or `=`.  However, there is a strong preference for using `<-`.
 
 ### References 
 * R in a nutshell
 * R Cookbook
 * Use R! Series at Springer
 
+
+### Basics 
+
+
+
+### Command Line 
+R is an interactive language, much like the BASH shell.
+
+
+    $ R
+    
+    R version 3.0.0 (2013-04-03) -- "Masked Marvel"
+    Copyright (C) 2013 The R Foundation for Statistical Computing
+    Platform: x86_64-apple-darwin10.8.0 (64-bit)
+
+    R is free software and comes with ABSOLUTELY NO WARRANTY.
+    You are welcome to redistribute it under certain conditions.
+    Type 'license()' or 'licence()' for distribution details.
+
+      Natural language support but running in an English locale
+
+    R is a collaborative project with many contributors.
+    Type 'contributors()' for more information and
+    'citation()' on how to cite R or R packages in publications.
+
+    Type 'demo()' for some demos, 'help()' for on-line help, or
+    'help.start()' for an HTML browser interface to help.
+    Type 'q()' to quit R.
+
+    >
+
+
+### Numbers
+
+Numbers are interpreted literally
+
+    > 2.5
+    [1] 2.5
+
+    > typeof(1)
+    [1] "double"
+
+
+### Character Vectors
+    
+Character objects are used to represent text between quotes
+
+    > "My name is Jonah"
+    [1] "My name is Jonah"
+
+Single quotes can also be used to enclose double quotes within your string.
+
+    > 'His name is "Theo"'
+    [1] "His name is \"Theo\""
+
+What are those \" for?  They're escape codes, they "escape" from their normal job of closing a string for that one character.
+
+### Boolean
+
+`TRUE` and `FALSE` are special words in R
+
+    > "a" == "b"
+    1] FALSE
+    > "a" == "a"
+    [1] TRUE
+
+    > TRUE == TRUE
+    [1] TRUE
+
+
+### Vectors 
+
+Vectors can be created using the `c()` function to *combine* elements.
+
+    > myvar <- c(1,2,3,4,5)
+    > myvar
+    [1] 1 2 3 4 5
+    > myvar[1]
+    [1] 1
+    > myvar[1:3]
+    [1] 1 2 3
+
+
+### Functions
+
+    function(arguments) {body} 
+
+
 ### Installing packages
 
 We're going to install the package ggplot2 for our plotting needs.  There are other plotting tools in R, but ggplot2 is a modern plot package that follows [Leeland Wilkinson's "Grammer of Graphics"](http://link.springer.com/book/10.1007/0-387-28695-0/)
 
     install.packages('ggplot2', repos=c("http://cran.rstudio.com/"))
+
+## ggplot2
 
 ### Spectrograhps
 
