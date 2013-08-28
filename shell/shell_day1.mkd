@@ -1,0 +1,377 @@
+###Overview
+
+Much of the content in the first week will be drawn from the excellent "Software Carpentry" (software-carpentry.org) Lessons on the Unix Shell.
+
+### SSH 
+* [PuTTy](http://www.chiark.greenend.org.uk/~sgtatham/putty/) Windows SSH Client
+* Terminal.app - Mac OS X - Located in Applications -> Utilities
+    
+    ssh -X 4x4@bison.rccc.ou.edu
+
+###  Great Resource
+
+"The Linux Command Line: A Complete Introduction"
+
+![Linux Command Line](./images/LinuxCommandLine.png)
+
+Available to borrow from my office.
+
+### Why a shell? 
+
+"Mouse clicks are nice, but you can't put them in a script." -- Mark Minasi (ht @JohnDCook)
+
+### What is a shell? 
+A shell is an interactive interface to instruct an operating system. 
+
+![Shell](./images/shell.png)
+
+
+### Entering commands 
+
+Commands have names, we call a command by entering its name `date` for example:
+
+    [me@bison ~]$ date
+    Fri Aug  2 11:46:12 CDT 2013
+
+### Print a calendar
+Print a text calendar of the current month
+
+    [me@bison ~]$ cal 
+        August 2013
+    Su Mo Tu We Th Fr Sa
+                 1  2  3
+     4  5  6  7  8  9 10
+    11 12 13 14 15 16 17
+    18 19 20 21 22 23 24
+    25 26 27 28 29 30 31
+
+### Command line options
+
+Unix commands often have multiple "flags" or options you can enter to modify their behavior.
+
+---
+
+**Activity: Try `cal -j`, what do you think `-j` stands for?**
+
+
+### Command line option (cont)
+
+Now lets try:
+
+    cal -y 
+
+---
+
+**Activity: What do you think `-y` stands for?**
+
+### Documentation 
+Every linux/unix system will typically have online documentation for each command.  Typically you access documentation for a command by typing:
+
+    man <command name>
+
+Example:
+    
+    man cal
+
+* This documentation is called the 'man page' for a command.
+* Use `q` to quit the man page.
+
+---
+
+**Activity: Try to get `cal` to output a calendar for the month of September in the year 2050** 
+
+
+### Disk Free
+Show the ammount of disk free (df) on a system
+
+    [me@bison ~]$ df -h
+
+    Filesystem            Size  Used Avail Use% Mounted on
+    /dev/mapper/sys_vg-root_lv
+                           12G  5.6G  5.5G  51% /
+    tmpfs                 7.8G     0  7.8G   0% /dev/shm
+    /dev/sda1             504M   95M  384M  20% /boot
+    /dev/mapper/sys_vg-tmp_lv
+                          197G  188M  187G   1% /tmp
+    /dev/mapper/sys_vg-var_lv
+                          2.0G  497M  1.4G  26% /var
+    panda:/home/me  142G  132G  2.9G  98% /home/me
+    panda:/export/software
+                           20G   19G  1.5G  93% /misc/software
+
+### Command History 
+
+History is a command that will show you the list of your most recently run commands.
+
+    history
+
+### What is a filesystem?
+
+* Filesystems are a way to store and retrieve files on a computer.  
+* We'll be using a UNIX filesystem which has a few differences from the Windows filesystem you may be familiar with.  
+* All files and directories are organized as branches of the *root directory* or `/`.  
+* When you log into a unix system you're usually placed in your *home directory* `/home/username`, where `username` is your username.
+
+### Moving around the filesystem in the shell ###
+
+* `pwd` - Show present working directory
+* `cd` - change directory.  Lets you move around the file system hierarchy
+* `ls` - list directory contents.  Lets you show a list of files in the current directory, or get more information about a file.
+* `file` - interogates and tells you the file type of a file
+* `touch` - change the file last accessed timestamp if file exists, or creates a file that does not yet exist
+* `du` - show disk usage of files and subdirectories of current directory 
+* `df` - shows the ammount of disk free on the system, best used with the `-h` option to make result easy to read. 
+* `mkdir` - make a directory
+* `cat` - catalog (show) the contents of a file.
+
+### The filesystem tree 
+
+When you log into a system you're dropped into your *home directory*.  To see the full path to your home directory
+    
+    [me@bison ~]$ pwd
+    /home/me
+
+
+### Find our course data directory
+
+We've been told that our course data directory is located in `/data/vol10/education/courses` But we don't know the exact directory.  Lets go look for it.
+
+    cd /data/vol10/education/courses/
+    ls
+    cd 2013
+    ls
+    cd PBIO-5733
+    pwd
+
+### Environment variables
+
+This shell has a set of variables set, known as *the environment*.  To see all of the varibles that are set in the environment we can run the `set` command.
+
+### Environment Variables Activity
+
+* Variables can be set by `variablename=somevalue`.  
+* And recalled by reffering to them with a `$` before their name.
+* It is very important in Bash that there be no spaces around the `=`
+
+---
+
+**Activity: Set a variable called `name` to your name**
+
+
+### Running programs
+To run a program, you type its name.  If the program is found somewhere in the folders listed in `$PATH` the program is executed.
+
+Lets look at our `$PATH`:
+    
+    echo $PATH
+
+### Running `ls`
+Now lets run the command `ls` which lists the files in the current directory:
+
+    ls 
+
+### Running `ls` (cont)
+
+To find the path of the program that is running type:
+    
+    which <program name>
+    # Example:
+    which ls
+
+### Running programs (activity)
+
+Activity: 
+
+* Try to figure out the runtime location of command `R` used to launch the R statistical system .
+* Try to find where the `python` interpreter is.
+
+
+
+### Editors ###
+Often when working in a unix environment you will find the need to edit text files, either data files, configuration or scripts.  There are several to choose from, but we'll be using `nano` in this course.
+
+#### Available Editors
+* nano - easy to use
+* vi/vim - somwehat harder to use but very powerful
+* emacs - 
+
+To create a new file with `nano` you can simply run it with a new file name as its first command line parameter:
+
+    nano somefile.txt
+
+### Editor Activity
+
+**Activity: Create a file named `test` with the text `Hello world` in it, then save it**
+Hint: `^X` means press ctrl and X on your keyboard at the same time.
+
+### Setting variables
+Bash variables are easy to set at any shell prompt:
+
+    MYNAME=Someguy
+
+This stores the text to the right of the `=` as a variable named `MYNAME`.  It can then be retrieved at a later time by prefixing it with `$`.  So we could do something like:
+    
+    echo "My name is: $MYNAME"
+
+### Redirection (overwrite)
+
+The standard output of any command can be sent to a file using redirection.  An example:
+
+    echo "My name is: $MYNAME" > hisname
+
+This placed the string "My name is Someguy" into a file called `hisname`.  If we run this command again it will overwrite the file.
+
+### Redirection (append)
+
+If we'd rather our redirections append to the file we can do the following:
+
+    echo "My name is: $MYNAME" >> hisname
+    echo "My name is: $MYNAME" >> hisname
+    echo "My name is: $MYNAME" >> hisname
+
+We now have file with three copies of the same line. 
+
+### Redirection activity 
+
+Create a file which contains a Julian date calendar for the year 2014.
+
+
+### Pipes
+
+Pipes are very similar to redirection, but instead of the target being a file it is another program.
+
+    cal -y 2010 | wc -w
+
+`wc` is a command which counts words in a document.
+
+### Grep
+
+Grep is a command that can search within a file and return only the lines where the search term is matched.
+
+
+### Ending a Terminal Session 
+    
+    exit
+
+or
+
+    Ctrl-D
+
+
+
+### Other Resources 
+
+* [Top 50 Linux Commands](http://www.thegeekstuff.com/2010/11/50-linux-commands/)
+
+### Next time
+
+* Functions
+* Conditionals
+* Loops
+* Making scripts
+
+### Homework
+
+#### Basic
+Look throught [The top 50 Linux commands](http://www.thegeekstuff.com/2010/11/50-linux-commands/) and write me a paragraph about how you might use the command when working with a scientific dataset you might encounter in your research.
+
+#### Advanced
+Write a and send me an example that uses one or more of the commands to accomplish an interesting task.
+
+
+### Week 2 Bash/Linux
+
+Week 2 slides
+
+
+### Conditionals
+
+    a=1
+    b=0
+    if [[ $a -gt $b ]] ; then
+        echo "a is bigger than b"
+    elif [[ $b -gt  $a ]]; then 
+        echo "b is bigger than a"
+    else
+        echo "Something crazy is going on"
+    fi
+
+
+### Integer comparison operators
+
+Available comparisons are:
+
+* `-gt` - greater than
+* `-ge` - greater than or equal to
+* `-lt` - less than
+* `-le` - less than or equal to
+* `-eq` - equal to
+* `-ne` - not equal to
+
+Note that these only work in **integers**
+
+
+### Functions
+Functions are a way to quickly and interactively group a set of commands.  They are created by following a word with `()` and putting the commands you want between `{}` after the declaration.
+
+Example:
+
+    name=Jonah
+    myfunction() { echo "My name is $name"; }
+
+    myfunction
+
+### Function parameters
+
+    myfunction2() { 
+        name=$1;
+        echo "My name is $name"
+    }
+
+    myfunction2 Gerard
+
+`$1` is a special variable meaning the first command line argument (first string after the space when calling the function)
+
+### Function parameters
+
+    myfunction3() { 
+        name=$1;
+        nice=$2;
+        if [ $nice == "yes" ]; then
+            echo "Hello $name, nice to see you";
+        elif [ $nice == "no" ]; then
+            echo "Hello $name, please go away";
+        else
+            echo "Hi $name, I'm not really sure if your nice or not";
+        fi
+    }
+
+    myfunction3 Gerald yes
+    myfunction3 Gerald no
+    myfunction3 Gerald foo
+
+### Loops
+Loops allow you repeat some task with slight variation.  
+
+#### Examples
+* For example, you might want to keep running a set of commands until a certain environment variable reaches a certain state.
+* Or you might want to loop over a list of files in a directory and perform some operation on them.
+
+### while loop
+
+    a=0;
+    while [[ $a -lt 10 ]]; do 
+        echo "I'm running"; 
+        a=$a+1; 
+     done
+
+### for
+    
+    for name in james mike misha kim jeff aaron fred; do
+        echo "==== begin $name ====";
+        echo "The current record's name is: $name";
+        echo "==== end $name ====";
+    done;
+
+
+
