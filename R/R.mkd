@@ -146,6 +146,14 @@ We're going to install the package ggplot2 for our plotting needs.  There are ot
 
     install.packages('ggplot2', repos=c("http://cran.rstudio.com/"))
 
+## plyr
+
+### plyr intro
+
+** Assign plyr paper **
+
+Plyr is a tool to enable split, apply, combine type workflows.  Imagine a dataset that you want to split apart, run an operation on, and recombine.
+
 ## ggplot2
 
 ### Spectrograhps
