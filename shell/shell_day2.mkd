@@ -1,20 +1,103 @@
-### Week 2 Bash/Linux
+### Bash/Linux
 
-Week 2 slides
+#### Lecture 2 slides
+
+Jonah Duckles
+
+OU IT
+
+Research Informatics
+
+jduckles@ou.edu
+
+### What are programs good at?
+
+* Doing things over and over again!
+* Selecting what path to take.
 
 
-### Conditionals
+### While Loop
 
-    a=1
-    b=0
-    if [[ $a -gt $b ]] ; then
-        echo "a is bigger than b"
-    elif [[ $b -gt  $a ]]; then 
-        echo "b is bigger than a"
-    else
-        echo "Something crazy is going on"
-    fi
+A while loop:
 
+    counter=1
+    while [[ counter -lt 10 ]]; do
+        echo "The current number is $counter";
+        counter=$[$counter + 1];
+    done;
+
+This while loop does the same thing at each iteration, but it changes the state of `$counter` with each iteration.
+
+### What is going on #1
+
+    counter=1
+
+We're setting a counter variable to the value 1
+
+
+### What is going on #2
+    while [[ counter -lt 10 ]]; do
+
+    while <condition>; do
+
+* while - do something while the condition is true
+* condition - some boolean (true/false) test
+* do - keyword that says, after do, this is what we'll be doing each time the test is true.
+
+---
+
+The `[[ ]]` is just the `bash` syntax for denoting a test.
+
+### What is going on #3
+
+    counter=1
+    while [[ counter -lt 10 ]]; do
+        echo "The current number is $counter";
+        counter=$[$counter + 1];
+
+Lets go line by line
+
+* echo - Echo a string, fill in `$counter` with the current value of `$counter`.
+* `counter=$[counter + 1];` - set `counter` to the **current** value of `counter` + 1
+
+---
+
+What will happens next?
+
+
+### What is going on #4
+
+    done;
+
+* done - this code block is now `done`.
+
+Does this mean the computation is done?
+
+### Lets all try it
+
+What do think will happen?
+
+    counter=1
+    while [[ counter -lt 10 ]]; do
+        echo "The current number is $counter"
+        counter=$[$counter + 1]
+    done
+
+
+
+* What will be the first message echoed?
+* What will be the last message echoed?
+
+Note that the `;` is important and after the `[[` and before the `]]` there is a space.
+
+### Debrief
+So we can make the computer do things over and over again.  
+
+How might we write a program which performs a calculation based on julian day for every day in the year 2016?
+
+* What should we call our counter variable?
+* How many days are there in 2016?
+* What might we `do`?
 
 ### Integer comparison operators
 
@@ -29,9 +112,120 @@ Available comparisons are:
 
 Note that these only work in **integers**
 
+### Selecting the path to follow?
+
+Most programming languages use the following construct, but syntax can vary widely.
+
+    if [ some condition is true ] then
+        < consequence >
+    else if [ some other condition is true ] then
+        < alternate consequence >
+    else
+        < default if no conditions are met >
+    endif
+
+Note: syntax on this slide is pseudocode not bash.
+
+
+### Why ifs?
+
+Conditionals, or if statements let us chain together behaviors of a program.  We can then build up program flow charts which give us advanced capabilities.
+
+
+### Flowchart example
+
+![Flowchart](./images/flowchart.png)
+
+### Conditionals #1
+    
+    somevalue=600
+    if [[ $somevalue -lt 5000 ]]; then 
+        echo "Your number is small!"
+    fi
+
+### Conditionals #2
+    
+Set a variable:
+    
+    somevalue=600
+
+### Conditionals #3
+    
+Setup a conditional statement:
+
+    if [[ $somevalue -lt 500 ]]; then
+
+### Conditionals #4
+
+Give it somethign to do:
+
+    echo "Your number is small!"
+
+### Conditionals #5
+
+End the conditional statement
+
+    fi
+
+`fi` is `if` backwards.
+
+### All together
+
+What do you think will happen when we run this statement?
+
+    somevalue=600
+    if [[ $somevalue -lt 5000 ]]; then 
+        echo "Your number is small!"
+    fi
+
+### What if...
+
+    somevalue=5002
+    if [[ $somevalue -lt 5000 ]]; then 
+        echo "Your number is small!"
+    fi
+
+
+### more complex conditionals
+
+    a=1
+    b=0
+    if [[ $a -gt $b ]] ; then
+        echo "a is bigger than b"
+    elif [[ $b -gt  $a ]]; then 
+        echo "b is bigger than a"
+    else
+        echo "Something crazy is going on"
+    fi
+
 
 ### Functions
-Functions are a way to quickly and interactively group a set of commands.  They are created by following a word with `()` and putting the commands you want between `{}` after the declaration.
+
+In mathematics what is a function?
+
+$$
+f(x) = x^2
+$$
+
+It is a machine, we feed in some value of `x` and get some modified value of `x`.
+
+### Functions #2
+
+$$
+f(x) = x^2
+$$
+
+Programming functions are analogous, but rather than a mathematical equation, we can wrap a set of procedures which take placed based on some intput parameters.  In the mathematical sense:
+
+$$
+f(x)
+$$
+
+Has one *parameter* `x`
+
+### Functions #3
+
+Programming functions are a way to group a set of commands.  In `bash` They are created by following a word with `()` and putting the commands you want between `{}` after the declaration.
 
 Example:
 
@@ -41,6 +235,8 @@ Example:
     myfunction
 
 ### Function parameters
+
+Function parameters are objects or variables you pass to the function that the function can then act on.
 
     myfunction2() { 
         name=$1;
@@ -70,9 +266,9 @@ Example:
     myfunction3 Gerald foo
 
 ### Loops
-Loops allow you repeat some task with slight variation.  
+Loops allow you repeat some task while varying the state before each iteration.  We've already seen a `while` loop.
 
-#### Examples
+### Examples
 * For example, you might want to keep running a set of commands until a certain environment variable reaches a certain state.
 * Or you might want to loop over a list of files in a directory and perform some operation on them.
 
@@ -81,16 +277,67 @@ Loops allow you repeat some task with slight variation.
     a=0;
     while [[ $a -lt 10 ]]; do 
         echo "I'm running"; 
-        a=$a+1; 
+        a=$[$a+1]; 
      done
 
 ### for
     
     for name in james mike misha kim jeff aaron fred; do
-        echo "==== begin $name ====";
         echo "The current record's name is: $name";
-        echo "==== end $name ====";
     done;
 
+### Further resources
+
+#### Books in my office
+
+* [Bash Cookbook](http://www.amazon.com/gp/product/0596526784/ref=oh_details_o00_s01_i00?ie=UTF8&psc=1)
+* [Learning the bash Shell](http://www.amazon.com/gp/product/0596009658/ref=oh_details_o00_s02_i00?ie=UTF8&psc=1)
+* [Classic Shell Scripting](http://www.amazon.com/gp/product/0596005954/ref=oh_details_o00_s03_i02?ie=UTF8&psc=1)
+* [The Linux Command Line](http://www.amazon.com/gp/product/1593273894/ref=oh_details_o00_s03_i03?ie=UTF8&psc=1)
+* [Learning the vi and vim Editors](http://www.amazon.com/gp/product/059652983X/ref=oh_details_o00_s03_i05?ie=UTF8&psc=1)
+
+#### Books at Springer
+
+* [Pro Bash Programming](http://link.springer.com/book/10.1007/978-1-4302-1998-9/page/1)
 
 
+### Practical Bash Skills
+
+Get Ameriflux data
+
+    wget ftp://cdiac.ornl.gov/pub/ameriflux/data/Level4/Sites_ByID/US-Ha1/AMF_USHa1_2003_L4_h_V002.txt
+
+`wget` is a program that can be used to download data from the command line
+
+### Looking at the data
+
+    less AMF_USHa1_2003_L4_h_V002.txt
+
+### `cut`
+
+`cut` can be used to look at or pare down a data set to specific columns of data.
+
+    cut --help 
+    Usage: cut OPTION... [FILE]...
+    Print selected parts of lines from each FILE to standard output.
+
+    cut -f "4,13" -d 
+
+
+
+
+### A More Complicated example putting it all together
+
+    cut AMF_USHa1_2003_L4_h_V002.txt -d "," -f"4,13" |\
+    grep -v '\-9999.00' |\
+    /usr/bin/gnuplot -e "set term png; 
+    set key off; set datafile separator ','; 
+    plot '-' using 1:2 with lines" > precip.png
+
+
+### The result
+
+![Precipitation 2003 Harvard Forest](./images/precip.png)
+
+
+### Breaking it apart
