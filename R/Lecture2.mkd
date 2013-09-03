@@ -1,0 +1,55 @@
+### Spectrograhps
+
+    readspec <- function(filename) {
+    # A function to read spectrograph files
+        spec <- read.csv(filename, sep='\t')
+        names(spec) <- c('wavelength', 'reflectance')
+        spec$experiment <- basename(filename)
+        return(spec)
+    }
+
+    files <- list.files(recursive=TRUE, pattern="mn.txt")
+
+    specs <- ldply(files, readspec)
+
+
+### Simple Plot 
+
+    plot <- ggplot(specs, aes(x=wavelength, y=reflectance, color=experiment))
+    plot + geom_line() + ylim(0,1) 
+
+### Tweaking
+
+    plot + geom_line() + ylim(0,1) + geom_vline(x=landsat_tm, color="gray60", alpha=0.5)   
+
+### Faceting
+
+     plot + facet_wrap(~experiment) +  geom_line() + geom_vline( x=landsat_tm, color='gray60', alpha=0.5) + ylim(0,1) 
+    
+
+### Annotations
+
+    # Landsat band ranges
+    landsat_tm <- c(450, 520, 520, 600, 630, 690, 760, 900, 1550, 1750)
+    landsat_etm <- c(450, 520, 520, 600, 630, 690, 770 900, 1550, 1750)
+
+    plot + geom_line() + ylim(0,1) + geom_vline(x=landsat_tm, color="gray60", alpha=0.5) + 
+        annotate("text", x=485, y=0.99, label="1") +
+        annotate("text", x=560, y=0.99, label="2") +
+        annotate("text", x=615, y=0.99, label="3")
+
+### Multiple PDF Outputs
+
+    makeplot <- function(df) {
+        outname <- paste(strsplit(unique(df$experiment),split="[.]")[[1]][1], ".pdf", sep="")
+        pdf(outname, width=17, height=11)
+        print(ggplot(df, aes(x=wavelength, y=reflectance)) + geom_line() + ops(title=strsplit(unique(df$experiment))
+        dev.off()
+    }
+
+    d_ply(specs, .(experiment), makeplot)
+
+
+### Advanced 
+[Learn X in Y minutes where X=R](Lhttp://learnxinyminutes.com/docs/r) 
+
