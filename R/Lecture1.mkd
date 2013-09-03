@@ -1,6 +1,10 @@
-### R History  
+### R Programming Lecture 1
 
-### Ways to run R
+Jonah M. Duckles
+
+OU IT - Research Informatics
+
+jduckles@ou.edu
 
 ### Why use R?
 * Advantages
@@ -58,8 +62,8 @@ There is also an RStudio version that runs via a modern web browser (Chrome, Saf
 
 ### References 
 * R in a nutshell
-* R Cookbook
-* Use R! Series at Springer
+* R Cookbook 
+* [Use R! Series at Springer](http://bit.ly/UseRBooks)
 
 ### Command Line 
 R is an interactive language, much like the BASH shell.
@@ -277,6 +281,10 @@ Much of the power in R comes from outside packages.  Lets go ahead and make sure
 
     install.packages('ggplot2',repos="http://cran.rstudio.com/")
 
+Where to find packages:
+* [All Packages](http://cran.r-project.org/web/packages/available_packages_by_name.html)
+* [Task Views](http://cran.r-project.org/web/views/)
+
 ### RStudio way
 
 ![Rstudio Package manager](./images/rstudio-packages.png)
@@ -285,7 +293,7 @@ Much of the power in R comes from outside packages.  Lets go ahead and make sure
 
 Either semicolons or newline (carriage returns) can be used to separate R expressions:
 
-    x <-1; y <- 2; z <- c(x,y)
+    x <-1; y <- 2; z <- c(x,y) 
 
 is the same as
     
@@ -293,11 +301,13 @@ is the same as
     y <-2
     z <- c(x,y)
 
+In this sense semicolons are not **required** like they are in `C`
+
 ### curly braces
 
 Used to group a series of expressions and only return the last one
 
-    { x <- 1; y <-2; z <- c(1,2); z*2}
+    { x <- 1; y <-2; z <- c(1,2); z*2 }
 
 
 ### Control structures
@@ -310,7 +320,8 @@ Used to group a series of expressions and only return the last one
     x <- 1
     if ( x == 1 ) print('Yay, you set x right')
     
-    if ( x > 10 ) print('Your number is big') else print('Your number is small')
+    if ( x > 10 ) print('Your number is big') else 
+        print('Your number is small')
 
 ### `{}` to help organize
 
@@ -397,143 +408,6 @@ Plotting this data set requires us to remove `-9999.0` values.
     plot(harvard_clean$DoY,harvard_clean$Precip, type="l")
 
 for more information on `plot()` do `help('plot')`
-
-
-### Writing a functions
-
-functions in R are created by calling `function()` and assigning it to a name. Example:
-
-    myfunc <- function() { print("This is awesome") }
-    myfunc()
-
-Note, if you call a function without `()` you'll just get the contents of the function displayed on the screen.
-
-    myfunc
-    function() { print("This is awesome") }
-
-
-### Functions with parameters
-
-    mynameis <- function(myname) { paste('hello, my name is',myname) }
-
-    mynameis('Jonah')
-
-For more info on `paste()`, look at `?paste`
-
-### Default parameters
-
-    mydefaults <- function(myname="Jonah", myheight=74.0) {
-        paste('Hello',myname, 'you are', myheight, 'inches tall')
-    }
-
-When we run this function it will automatically fill in the defaults:
-    
-    mydefaults()
-    [1] "Hello Jonah you are 74 inches tall"
-
-But we can override defaults:
- 
-    mydefaults(myname="Fred", myheight="60")
-    [1] "Hello Fred you are 60 inches tall"
-
-
-### Built-in Example datasets
-
-    mtcars
-    ?mtcars # shows more info
-
-### Lattice 
-
-    library(lattice)
-    attach(mtcars)
-    # create factors with value labels 
-    gear.f<-factor(gear,levels=c(3,4,5),
-  	 labels=c("3gears","4gears","5gears")) 
-    cyl.f <-factor(cyl,levels=c(4,6,8),
-        labels=c("4cyl","6cyl","8cyl")) 
-
-
-### Lattice plots
-
-    xyplot(mpg~wt|cyl.f*gear.f, data=mtcars)
-    splom(mtcars[c(1,3,4,5,6)], 
-  	 main="MTCARS Data")
-
-The power of lattice comes from formulas for more on lattice's use of formulas look at `help(xyplot)` in the Arguments --> x section.
-
-### Writing a useful function
-
-    library(lattice)
-    amfplot <- function(datafile) {
-        mydata <- read.csv(datafile)
-        print(names(mydata))
-        plotvar <- readline("Enter variable name you would like to plot: ")
-        mydata_clean <- mydata[mydata[plotvar] != -9999.00,]
-        f <- as.formula(paste(plotvar,' ~ DoY'))
-        print(xyplot( f, data=mydata_clean, type='l'))
-    }
-
-Any time you're doing a plot inside a function or `{}` it is a good idea to wrap the plot function in a `print()`.
-
-### What's going on here? (1/3)
-We're importing `lattice`
-
-    library(lattice)
-
-Declaring a function that accepts a single parameter `datafile`
-
-    amfplot <- function(datafile) {
-
-`datafile` is just a path to a file, we then open the file
-
-        mydata <- read.csv(datafile)
-
-### What's going on part 2/3
-
-We then print out a list of variable names from the dataset using `names()`:
-
-    print(names(mydata))
-
-We prompt the user to enter a column name they'd like to plot:
-
-    plotvar <- readline("Enter variable name you would like to plot: ")
-
-Based on that variable name we then remove all occurrences of the value -9999.00:
-
-    mydata_clean <- mydata[mydata[plotvar] != -9999.00,]
-
-### Whats going on part 3/3
-
-We make a formula representing the plot we'd like to show.
-
-    f <- as.formula(paste(plotvar, ' ~ DoY'))
-
-then we make a plot expression and print it:
-
-    print(xyplot( f, data=mydata_clean, type='l'))
-
-Finally we close the function block:
-    
-    }
-
-
-### Lets enter the function
-
-    library(lattice)
-    amfplot <- function(datafile) {
-        mydata <- read.csv(datafile)
-        print(names(mydata))
-        plotvar <- readline("Enter variable name you would like to plot: ")
-        mydata_clean <- mydata[mydata[plotvar] != -9999.00,]
-        f <- as.formula(paste(plotvar,' ~ DoY'))
-        print(xyplot( f, data=mydata_clean, type='l'))
-    }
-
-
-### calling the function
-
-    amfplot('/data/vol10/education/courses//Duckles_programming/AMF_USHa1_2003_L4_h_V002.txt')
-
 
 
 

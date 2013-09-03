@@ -1,0 +1,16 @@
+## FOSS for scientific data analysis
+
+## Bash
+* [Lecture 1](./shell/day1.html)
+* [Lecture 2](./shell/day2.html)
+
+## R
+* [Lecture 1](./R/day1.html)
+* [Lecture 2](./R/day2.html)
+* [Lecture 3](./R/day3.html)
+* [Lecture 4](./R/day4.html)
+
+## Python
+* [Lecture 1](./Python/day1.html)
+
+
