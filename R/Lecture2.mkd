@@ -172,6 +172,7 @@ In your code window, start a new function:
     holly_bush_clean <- readspec('./field-data/group1-field/holly_bush_10cm/holly_bush_10cm.mn.txt')
 
 Try it: 
+    
     holly_bush_clean <- readspec('./field-data/group1-field/holly_bush_10cm/holly_bush_10cm.mn.txt')
     yellowgrass_clean <- readspec('./field-data/group1-field/yellowgrass/yellowgrass_mean.mn.txt')
     spec <- rbind(holly_bush_clean,yellowgrass_clean)
