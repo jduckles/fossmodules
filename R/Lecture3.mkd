@@ -1,4 +1,92 @@
+### Finally
+
+    readspec <- function(filename) {
+    # A function to read spectral files
+        spec <- read.table(filename, header=TRUE)
+        names(spec) <- c('wavelength', 'reflectance')
+        spec$experiment <- basename(filename)
+        return(spec)
+    }
+    holly_bush_clean <- readspec('./field-data/group1-field/holly_bush_10cm/holly_bush_10cm.mn.txt')
+
+Try it: 
+    
+    holly_bush_clean <- readspec('./field-data/group1-field/holly_bush_10cm/holly_bush_10cm.mn.txt')
+    yellowgrass_clean <- readspec('./field-data/group1-field/yellowgrass/yellowgrass_mean.mn.txt')
+    spec <- rbind(holly_bush_clean,yellowgrass_clean)
+
+
+### Simple Plot 
+
+    specplot <- ggplot(spec, aes(x=wavelength, y=reflectance, color=experiment))
+    specplot + geom_line() + ylim(0,1) 
+
+### Annotations
+
+    # Landsat band ranges
+    landsat_tm <- c(450, 520, 520, 600, 630, 690, 760, 900, 1550, 1750)
+    landsat_etm <- c(450, 520, 520, 600, 630, 690, 770 900, 1550, 1750)
+
+    specplot + 
+        geom_line() + 
+        ylim(0,1) + 
+        geom_vline(x=landsat_tm, color="gray60", alpha=0.5) + 
+        annotate("text", x=485, y=0.99, label="1") +
+        annotate("text", x=560, y=0.99, label="2") +
+        annotate("text", x=615, y=0.99, label="3")
+
+Try adding the rest of the annotations for the remaining bands
+
+### Tweaking
+
+    specplot + 
+        geom_line() + 
+        ylim(0,1) + 
+        geom_vline(x=landsat_tm, color="gray60", alpha=0.5)   
+
+### Faceting
+
+     specplot + 
+        facet_wrap(~experiment) +  
+        geom_line() + 
+        geom_vline( x=landsat_tm, color='gray60', alpha=0.5) + 
+        ylim(0,1) 
+
+### Wrapping it all in a function
+    makeplot <- function(spec) {
+        specplot <- ggplot(spec, aes(x=wavelength, y=reflectance, color=experiment))
+        print(specplot +  
+            geom_line() + 
+            ylim(0,1) )
+    }
+
+
+### Writing to PDFs and PNGs.
+Sometimes you want to write a script that drops a whole bunch of images into a single file or directory.
+
+    pdf('filename.pdf', width=11, height=8.5)
+    print(     specplot + 
+            facet_wrap(~experiment) +  
+            geom_line() + 
+            geom_vline( x=landsat_tm, color='gray60', alpha=0.5) + 
+            ylim(0,1) 
+    )
+    dev.off()
+
+There are display drivers for `bmp(), jpeg(), png(), tiff(), svg(), ps(), pdf() and cairo_pdf()`. 
+
+
+### `plyr()`
+
+`plyr` is a package used for split-apply-combine workflows.
+
+    install.packages('plyr')
+
+More info at: ["Split-Apply-Combine Strategy for Data Analysis"](http://www.jstatsoft.org/v40/i01/paper)
+
+
 ### Multiple PDF Outputs
+
 
     makeplot <- function(df) {
         outname <- paste(
@@ -20,7 +108,7 @@
 
 
 ### Build a dataset with all data 
-
+ 
     # Find all files from both groups
     files <- list.files(recursive=TRUE, pattern="mn.txt")
 
@@ -30,9 +118,25 @@
 
 
 
+### Raster Package
+
+
+### Raster timeseries
+
+lapply( files, function(x) strptime(substr(x,10,16),format="%Y%j"))
+as.POSIXct(unlist(lapply( files, function(x) as.POSIXct(strptime(substr(x,10,16),format="%Y%j",tz="GMT")))), origin="1970-01-01", tz="GMT")
+
+
+
+### Advanced 
+[Learn X in Y minutes where X=R](Lhttp://learnxinyminutes.com/docs/r) 
+
+
+
+
 
 ### Built-in Example datasets
-
+ 
     mtcars
     ?mtcars # shows more info
 
@@ -137,6 +241,4 @@ Finally we close the function block:
 
 
 
-### Advanced 
-[Learn X in Y minutes where X=R](Lhttp://learnxinyminutes.com/docs/r) 
 
