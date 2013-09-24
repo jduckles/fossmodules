@@ -1,11 +1,34 @@
-### Finally
+### Review
+
+    y <- c(1,2,3,4,6)   # to combine elements into vectors
+    x <- 10             # <- is the preffered assignment operator
+    {}                  # for grouping
+    y[1]; y[y %% 3 == 0]# Selections
+    install.packages('ggplot2')
+    if ( x == 10) print('we made it into the if statement')
+    ?c; help('if') # getting help
+    mydata <- read.csv('somefile.txt')
+
+### Review
+
+    myfunction <- function(param1,param2='something') 
+        { print(paste(param1,param2) }
+    p <- ggplot(df, aes(x=xvar, y=yvar, group=somefactor)); p + geom_point()
+    readspec # a function to normalize ASD data
+
+
+
+### A Generalized function for reading in ASD Data.
 
     readspec <- function(filename) {
-    # A function to read spectral files
+    # A function to read and normalize column names on 
+    #    spectral files from ASD devices
+     
         spec <- read.table(filename, header=TRUE)
         names(spec) <- c('wavelength', 'reflectance')
         spec$experiment <- basename(filename)
         return(spec)
+   
     }
     holly_bush_clean <- readspec('./field-data/group1-field/holly_bush_10cm/holly_bush_10cm.mn.txt')
 
@@ -37,12 +60,6 @@ Try it:
 
 Try adding the rest of the annotations for the remaining bands
 
-### Tweaking
-
-    specplot + 
-        geom_line() + 
-        ylim(0,1) + 
-        geom_vline(x=landsat_tm, color="gray60", alpha=0.5)   
 
 ### Faceting
 
@@ -78,6 +95,7 @@ There are display drivers for `bmp(), jpeg(), png(), tiff(), svg(), ps(), pdf() 
 
 ### `plyr()`
 
+#### Overview
 `plyr` is a package used for split-apply-combine workflows.
 
     install.packages('plyr')
@@ -85,31 +103,43 @@ There are display drivers for `bmp(), jpeg(), png(), tiff(), svg(), ps(), pdf() 
 More info at: ["Split-Apply-Combine Strategy for Data Analysis"](http://www.jstatsoft.org/v40/i01/paper)
 
 
-### Multiple PDF Outputs
+#### plyr functions
+
+![](./images/plyr_functions.png)
 
 
-    makeplot <- function(df) {
-        outname <- paste(
-            strsplit(
-                unique(
-                    df$experiment),split="[.]")[[1]][1], ".pdf", sep=""
-            )
-        pdf(outname, width=17, height=11)
-        print(ggplot(df, aes(x=wavelength, y=reflectance)) + 
-            geom_line() + 
-            ops(title=strsplit(unique(df$experiment))
-        dev.off()
-    }
+#### Arrays 
+Sliced into lower-d pieces
 
-    d_ply(specs, .(experiment), makeplot)
+    a*ply(.data, .margins, .fun, ..., .progress="none")
+
+#### Data frames
+Subsetted by combinations of variables
+    
+    d*ply(.data, .variables, .fun, ..., .progress="none")
 
 
+#### Lists
+Each element in a list is a piece (similar to *apply functions in R)
+     
+    l*ply(.data, .fun, ..., .progress="none")
 
 
+### plyr slice 2d
+
+![](./images/slice_2d.png)
+
+### plyr slice 3d
+![](./images/slice_3d.png)
+
+### splits
+
+![](./images/plyr_splits.png)
 
 ### Build a dataset with all data 
  
     # Find all files from both groups
+    setwd('/data/vol10/education/courses/Duckles_programming')
     files <- list.files(recursive=TRUE, pattern="mn.txt")
 
     # ldply takes a list, runs a function for each item in the list
@@ -117,128 +147,107 @@ More info at: ["Split-Apply-Combine Strategy for Data Analysis"](http://www.jsta
     specs <- ldply(files, readspec)
 
 
+### Multiple PDF Outputs
 
-### Raster Package
-
-
-### Raster timeseries
-
-lapply( files, function(x) strptime(substr(x,10,16),format="%Y%j"))
-as.POSIXct(unlist(lapply( files, function(x) as.POSIXct(strptime(substr(x,10,16),format="%Y%j",tz="GMT")))), origin="1970-01-01", tz="GMT")
-
-
-
-### Advanced 
-[Learn X in Y minutes where X=R](Lhttp://learnxinyminutes.com/docs/r) 
-
-
-
-
-
-### Built-in Example datasets
- 
-    mtcars
-    ?mtcars # shows more info
-
-### Lattice 
-
-    library(lattice)
-    attach(mtcars)
-    # mtcars is a built in dataset we can use to play with lattice
-    mtcars
-
-### `xyplot`
-    
-    xyplot(mpg ~ wt)
-    xyplot(mpg ~ wt | gear)
-    xyplot(mpg ~ wt | gear * cyl)
-
-What is going on here?  Equation notation:
-    
-    y ~ x # plot variable y with respect to x
-    y ~ x | con1 # plot variable y wrt x conditioning on factor "con1"
-    y ~ x | con1 * con2 
-
-### `splom()`
-
-    splom(mtcars[c(1,3,4,5,6)], 
-  	 main="MTCARS Data")
-
-The power of lattice comes from formulas for more on lattice's use of formulas look at `help(xyplot)` in the Arguments --> x section.
-
-### Writing a useful function
-
-    library(lattice)
-    amfplot <- function(datafile) {
-        mydata <- read.csv(datafile)
-        print(names(mydata))
-        plotvar <- readline("Enter variable name you would like to plot: ")
-        mydata_clean <- mydata[mydata[plotvar] != -9999.00,]
-        f <- as.formula(paste(plotvar,' ~ DoY'))
-        print(xyplot( f, data=mydata_clean, type='l'))
+    makeplot <- function(df) {
+        print(ggplot(df, aes(x=wavelength, y=reflectance)) + 
+            geom_line() + 
+            ops(title=strsplit(unique(df$experiment))
     }
 
-Any time you're doing a plot inside a function or `{}` it is a good idea to wrap the plot function in a `print()`.
+    pdf('somefile.pdf', width=11, height=8.5)
+    d_ply(specs, .(experiment), makeplot)
+    dev.off()
 
-### What's going on here? (1/3)
-We're importing `lattice`
 
-    library(lattice)
 
-Declaring a function that accepts a single parameter `datafile`
+### Landsat bands
 
-    amfplot <- function(datafile) {
+    # Landsat TM
+    landsat_tm <- list(c(450, 520), c(520, 600), c(630, 690), c(760, 900), 
+                        c(1550, 1750), c(10400, 12500), c(2080, 2350))
+    # Landsat ETM+
+    landsat_etm <- list(c(450,520), c(520,600), c(630,690), c(770,900), 
+                          c(1550,1750), c(10400,12500), c(2090,2350),c(520,900))
+    # Landsat 8
+    landsat_8 <- list(c(430,450),c(450,510), c(530,590), c(640, 670), c(850,880), 
+                        c(1570,1650), c(2110,2290), c(500,680), c(1360,1380), 
+                        c(10600,11190), c(11500,12510))
 
-`datafile` is just a path to a file, we then open the file
+    # Shortcut
+    source('/data/vol10/education/courses/Duckles_programming/bands.R')
 
-        mydata <- read.csv(datafile)
 
-### What's going on part 2/3
 
-We then print out a list of variable names from the dataset using `names()`:
+### Summarize by band
 
-    print(names(mydata))
+    band1 <- subset(specs, wavelength > 450 & wavelength < 520 )
 
-We prompt the user to enter a column name they'd like to plot:
 
-    plotvar <- readline("Enter variable name you would like to plot: ")
-
-Based on that variable name we then remove all occurrences of the value -9999.00:
-
-    mydata_clean <- mydata[mydata[plotvar] != -9999.00,]
-
-### Whats going on part 3/3
-
-We make a formula representing the plot we'd like to show.
-
-    f <- as.formula(paste(plotvar, ' ~ DoY'))
-
-then we make a plot expression and print it:
-
-    print(xyplot( f, data=mydata_clean, type='l'))
-
-Finally we close the function block:
+### Generalize
     
+    summarizebyband <- function(df, bands) {
+      l <- ldply(bands, function(x) 
+        return(
+          data.frame(value=mean(
+            subset(df, wavelength > x[1] & wavelength < x[2])$reflectance ) )
+        )
+      )
+      return(data.frame(average=l,band=1:length(bands)))
+    }
+
+### Switching out sensors
+
+    ddply(specs, .(experiment), summarizebyband, landsat_tm)
+    ddply(specs, .(experiment), summarizebyband, landsat_etm)
+    ddply(specs, .(experiment), summarizebyband, landsat_8)
+
+
+### Generalize Further
+
+    summarizebyband <- function(df, bands, FUN, sensor="unknown") {
+      l <- ldply(bands, function(x) return(data.frame(
+                value=FUN(subset(df, wavelength > x[1] & wavelength < x[2])$reflectance ) 
+                )
+            )
+        )
+      return(data.frame(average=l,band=1:length(bands),sensor=sensor))
     }
 
 
-### Lets enter the function
+### Try various `FUN` options
+    ddply(specs, .(experimetn), summarizebyband, landsat_tm,mean)
+    ddply(specs, .(experiment), summarizebyband, landsat_tm,max)
+    ddply(specs, .(experiment), summarizebyband, landsat_tm,min)
 
-    library(lattice)
-    amfplot <- function(datafile) {
-        mydata <- read.csv(datafile)
-        print(names(mydata))
-        plotvar <- readline("Enter variable name you would like to plot: ")
-        mydata_clean <- mydata[mydata[plotvar] != -9999.00,]
-        f <- as.formula(paste(plotvar,' ~ DoY'))
-        print(xyplot( f, data=mydata_clean, type='l'))
-    }
+### Run for all Landsat sensors
+
+    # `specs` is our data frame of all experiments
+    ltm <- ddply(specs, .(experiment), summarizebyband, 
+            landsat_tm, mean,"tm")
+    etm <- ddply(specs, .(experiment), summarizebyband, 
+            landsat_etm, mean, "etm")
+    l8 <- ddply(specs, .(experiment), summarizebyband, 
+            landsat_8, mean, "l8")
+    toplot <- rbind(ltm,etm,l8)
+
+    ggplot(toplot, aes(x=band,y=value, color=experiment)) + 
+        geom_line(alpha=0.8) + geom_point() + facet_wrap(~sensor)
 
 
-### calling the function
+### Exercise
 
-    amfplot('/data/vol10/education/courses//Duckles_programming/AMF_USHa1_2003_L4_h_V002.txt')
+Make a data structure for MODIS bands
+
+    # Landsat TM
+    landsat_tm <- list(c(450, 520), c(520, 600), c(630, 690), c(760, 900), 
+                        c(1550, 1750), c(10400, 12500), c(2080, 2350))
+
+Use your web browser to find the MODIS spectral bands and create a list which contains their spectral ranges and make a plot for MODIS bands.
 
 
+### Next Lecture
+
+Raster package for reading MODIS data.
 
 

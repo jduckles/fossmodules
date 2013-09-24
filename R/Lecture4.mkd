@@ -1,0 +1,125 @@
+
+### Raster Package
+
+
+### Raster timeseries
+
+lapply( files, function(x) strptime(substr(x,10,16),format="%Y%j"))
+as.POSIXct(unlist(lapply( files, function(x) as.POSIXct(strptime(substr(x,10,16),format="%Y%j",tz="GMT")))), origin="1970-01-01", tz="GMT")
+
+
+
+### Advanced 
+[Learn X in Y minutes where X=R](Lhttp://learnxinyminutes.com/docs/r) 
+
+
+
+
+
+### Built-in Example datasets
+ 
+    mtcars
+    ?mtcars # shows more info
+
+### Lattice 
+
+    library(lattice)
+    attach(mtcars)
+    # mtcars is a built in dataset we can use to play with lattice
+    mtcars
+
+### `xyplot`
+    
+    xyplot(mpg ~ wt)
+    xyplot(mpg ~ wt | gear)
+    xyplot(mpg ~ wt | gear * cyl)
+
+What is going on here?  Equation notation:
+    
+    y ~ x # plot variable y with respect to x
+    y ~ x | con1 # plot variable y wrt x conditioning on factor "con1"
+    y ~ x | con1 * con2 
+
+### `splom()`
+
+    splom(mtcars[c(1,3,4,5,6)], 
+  	 main="MTCARS Data")
+
+The power of lattice comes from formulas for more on lattice's use of formulas look at `help(xyplot)` in the Arguments --> x section.
+
+### Writing a useful function
+
+    library(lattice)
+    amfplot <- function(datafile) {
+        mydata <- read.csv(datafile)
+        print(names(mydata))
+        plotvar <- readline("Enter variable name you would like to plot: ")
+        mydata_clean <- mydata[mydata[plotvar] != -9999.00,]
+        f <- as.formula(paste(plotvar,' ~ DoY'))
+        print(xyplot( f, data=mydata_clean, type='l'))
+    }
+
+Any time you're doing a plot inside a function or `{}` it is a good idea to wrap the plot function in a `print()`.
+
+### What's going on here? (1/3)
+We're importing `lattice`
+
+    library(lattice)
+
+Declaring a function that accepts a single parameter `datafile`
+
+    amfplot <- function(datafile) {
+
+`datafile` is just a path to a file, we then open the file
+
+        mydata <- read.csv(datafile)
+
+### What's going on part 2/3
+
+We then print out a list of variable names from the dataset using `names()`:
+
+    print(names(mydata))
+
+We prompt the user to enter a column name they'd like to plot:
+
+    plotvar <- readline("Enter variable name you would like to plot: ")
+
+Based on that variable name we then remove all occurrences of the value -9999.00:
+
+    mydata_clean <- mydata[mydata[plotvar] != -9999.00,]
+
+### Whats going on part 3/3
+
+We make a formula representing the plot we'd like to show.
+
+    f <- as.formula(paste(plotvar, ' ~ DoY'))
+
+then we make a plot expression and print it:
+
+    print(xyplot( f, data=mydata_clean, type='l'))
+
+Finally we close the function block:
+    
+    }
+
+
+### Lets enter the function
+
+    library(lattice)
+    amfplot <- function(datafile) {
+        mydata <- read.csv(datafile)
+        print(names(mydata))
+        plotvar <- readline("Enter variable name you would like to plot: ")
+        mydata_clean <- mydata[mydata[plotvar] != -9999.00,]
+        f <- as.formula(paste(plotvar,' ~ DoY'))
+        print(xyplot( f, data=mydata_clean, type='l'))
+    }
+
+
+### calling the function
+
+    amfplot('/data/vol10/education/courses//Duckles_programming/AMF_USHa1_2003_L4_h_V002.txt')
+
+
+
+
