@@ -1,6 +1,8 @@
 library(plyr)
 library(gpplot2)
 
+
+
 readspec <- function(filename) {
   # A function to read and normalize column names on 
   #    spectral files from ASD devices
@@ -11,6 +13,12 @@ readspec <- function(filename) {
   return(spec)
   
 }
+
+
+
+
+
+
 
 setwd('~/tmp/Lab1/Lab-data/group1')
 # students should setwd to: 

@@ -1,12 +1,103 @@
 
 ### Raster Package
 
+Great for raster processing in R.  Manages memory utilization by writing to temp files.
 
-### Raster timeseries
+    install.packages(c('raster','rgdal','rasterVis'))
 
-lapply( files, function(x) strptime(substr(x,10,16),format="%Y%j"))
-as.POSIXct(unlist(lapply( files, function(x) as.POSIXct(strptime(substr(x,10,16),format="%Y%j",tz="GMT")))), origin="1970-01-01", tz="GMT")
+### Object Types
 
+* RasterLayer - a single 2-d layer along with projection and coordinate metadata
+* RasterStack - Collection of raster layers with same extent
+* RasterBrick - Can only reference a single file
+
+### More information
+
+[Introduction to the `raster` package](http://cran.r-project.org/web/packages/raster/vignettes/Raster.pdf)
+
+### Opening Rasters
+    setwd('/data/vol10/education/courses/Duckles_programming/MODIS/')
+    library(raster)
+    setwd('~/tmp/MODIS')
+    fname <- 'MOD09A1.A2001081.h09v05.005.2007008144140.ndvi.tif'
+    myrast1 <- raster(fname)
+
+### Univariate stats
+
+`as.vector` just unwravels our 2-d array and makes it 1-d.
+
+    cellStats(myrast1,sd)
+    mean(as.vector(myrast1))
+    max(as.vector(myrast1))
+    min(as.vector(myrast1))
+    sd(as.vector(myrast1))
+    quantile(as.vector(myrast1))
+    hist(as.vector(myrast1))
+
+### Unary operations
+
+    over_02 <- myrast[myrast >= 0.2]
+    ggplot(over_02) + 
+
+### Raster math
+
+    fname2 <- 'MOD09A1.A2002081.h09v05.005.2007136114639.ndvi.tif'
+    myrast2 <- raster(fname2)
+
+    diff <- myrast2 - myrast1
+    hist(as.vector(diff))
+
+    rmean <- mean(myrast1,myrast2)
+    sd <- sd(myrast1,myrast2)
+
+
+### Land Cover Data (MCD12Q1)
+
+Download data:
+
+    http://e4ftl01.cr.usgs.gov/MOTA/MCD12Q1.051/2002.01.01/MCD12Q1.A2002001.h09v05.051.2012157223452.hdf
+
+Extract band:
+    # bash commands 
+    gdalinfo MCD12Q1.A2002001.h09v05.051.2012157223452.hdf
+    gdal_translate HDF4_EOS:EOS_GRID:"MCD12Q1.A2002001.h09v05.051.2012157223452.hdf":MOD12Q1:Land_Cover_Type_1 IGBP_LC_2002.tif -co COMPRESS=LZW
+
+
+
+### Plot the landcover
+
+[Lookup table (click +Layers)](https://lpdaac.usgs.gov/products/modis_products_table/mcd12q1)
+
+    labels <- c("water","evergreen needleleaf", "evergreen broadleaf", 
+        "deciduous needleleaf", "deciduious broadleaf", "mixed forest",
+        "closed shrubland", "open shrubland", "woody savannas",
+        "savannas", "grasslands", "permanent wetlands",
+        "croplands", "urban and built-up", "cropland/natural vegetation mosaic",
+        "snow and ice", "barren sparsely vegetated", "unclassified")
+
+    colors <- c("blue","darkgreen","forestgreen","green3","green4",
+        "lightgreen", "khaki4","khaki2", "darkorange3","darkorange4",
+        "gray56","darkslategray","gold2","firebrick3","gold4",
+        "ghostwhite","gray23","deeppink")
+    
+    landcover <- raster("IGBP_LC_2002.tif")
+    plot(landcover,col=colors)
+
+
+### Raster reProjection
+
+    # Note, this takes a long time (several minutes).
+    landcover_aea <- rasterProject(landcover, crs="+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +no_defs")
+
+A good source for finding [Spatial Reference](spatialreference.org) projection info.
+
+
+
+### Using Plyr to Plot by landcover class
+    library(raster)
+    library(plyr)
+    mystack <- stack(list.files(pattern=".ndvi.tif"))
+    a_ply(mystack,sta
 
 
 ### Advanced 
