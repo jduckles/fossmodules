@@ -1,4 +1,8 @@
 
+
+
+
+
 ### Raster Package
 
 Great for raster processing in R.  Manages memory utilization by writing to temp files.
@@ -9,13 +13,14 @@ Great for raster processing in R.  Manages memory utilization by writing to temp
 
 * RasterLayer - a single 2-d layer along with projection and coordinate metadata
 * RasterStack - Collection of raster layers with same extent
-* RasterBrick - Can only reference a single file
+* RasterBrick - Can only reference a single file (multiband TIF etc)
 
 ### More information
 
 [Introduction to the `raster` package](http://cran.r-project.org/web/packages/raster/vignettes/Raster.pdf)
 
 ### Opening Rasters
+
     setwd('/data/vol10/education/courses/Duckles_programming/MODIS/')
     library(raster)
     setwd('~/tmp/MODIS')
@@ -24,20 +29,17 @@ Great for raster processing in R.  Manages memory utilization by writing to temp
 
 ### Univariate stats
 
-`as.vector` just unwravels our 2-d array and makes it 1-d.
-
     cellStats(myrast1,sd)
-    mean(as.vector(myrast1))
-    max(as.vector(myrast1))
-    min(as.vector(myrast1))
-    sd(as.vector(myrast1))
-    quantile(as.vector(myrast1))
-    hist(as.vector(myrast1))
+    cellStats(myrast1,mean)
+    cellStats(myrast1,max)
+    cellStats(myrast1,min)
+    cellStats(myrast1,quantile)
+    # Diagnostic plots
+    hist(myrast1)
+    density(myrast1)
+    persp(myrast1)
+    contour(myrast1)
 
-### Unary operations
-
-    over_02 <- myrast[myrast >= 0.2]
-    ggplot(over_02) + 
 
 ### Raster math
 
@@ -51,6 +53,50 @@ Great for raster processing in R.  Manages memory utilization by writing to temp
     sd <- sd(myrast1,myrast2)
 
 
+### Manipulating MODIS HDFs with GDAL tools
+
+In a bash shell:
+    
+    cd /data/vol10/education/courses/Duckles_programming/MODIS/compute_ndvi
+    gdalinfo MOD09A1.A2013137.h09v05.005.2013146123056.hdf
+    gdal_translate HDF4_EOS:EOS_GRID:"MOD09A1.A2013137.h09v05.005.2013146123056.hdf":MOD_Grid_500m_Surface_Reflectance:sur_refl_b01\
+        MOD09A1.A2013137_b01.tif -co COMPRESS=LZW
+    gdal_translate HDF4_EOS:EOS_GRID:"MOD09A1.A2013137.h09v05.005.2013146123056.hdf":MOD_Grid_500m_Surface_Reflectance:sur_refl_b02\
+        MOD09A1.A2013137_b02.tif -co COMPRESS=LZW
+
+### Import band data
+
+Back in R:
+    
+    library(raster)
+    setwd('/data/vol10/education/courses/Duckles_programming/MODIS/compute_ndvi')
+    b01 <- raster('MOD09A1.A2013137_b01.tif')
+    b02 <- raster('MOD09A1.A2013137_b02.tif')
+    ndvi <- (b02 - b01) / (b01 + b02)
+    ndvi_clean <- calc(ndvi, fun=function(x) { 
+            x[x >= 1] <- NA; x[x <= -1] <- NA; return(x)
+        }
+    )
+
+### NDVI Computed 
+
+![NDVI for MOD09A1.A2013137](./images/ndvi_computed.png)
+
+### High NDVI
+
+    high_ndvi <- calc(ndvi_clean, fun=function(x) { x[x<0.3] <- NA; return(x) } )
+
+![NDVI >0.3](./images/ndvi_gt03.png)
+
+### Calc
+
+Calc is used to perform a calculation on every cell in a raster
+
+    calc(myrast1, function(x) { x[x > 0.5] <- NA; return(x) } )
+
+
+
+
 ### Land Cover Data (MCD12Q1)
 
 Download data:
@@ -58,9 +104,11 @@ Download data:
     http://e4ftl01.cr.usgs.gov/MOTA/MCD12Q1.051/2002.01.01/MCD12Q1.A2002001.h09v05.051.2012157223452.hdf
 
 Extract band:
+    
     # bash commands 
     gdalinfo MCD12Q1.A2002001.h09v05.051.2012157223452.hdf
-    gdal_translate HDF4_EOS:EOS_GRID:"MCD12Q1.A2002001.h09v05.051.2012157223452.hdf":MOD12Q1:Land_Cover_Type_1 IGBP_LC_2002.tif -co COMPRESS=LZW
+    gdal_translate HDF4_EOS:EOS_GRID:"MCD12Q1.A2002001.h09v05.051.2012157223452.hdf":MOD12Q1:Land_Cover_Type_1\
+        IGBP_LC_2002.tif -co COMPRESS=LZW
 
 
 
@@ -92,12 +140,50 @@ Extract band:
 A good source for finding [Spatial Reference](spatialreference.org) projection info.
 
 
-
-### Using Plyr to Plot by landcover class
+### Using extract to build timeseries to Plot ndvi
     library(raster)
     library(plyr)
+    library(reshape2)
+
     mystack <- stack(list.files(pattern=".ndvi.tif"))
-    a_ply(mystack,sta
+    
+    extraction <- melt(extract(mystack,c(1,1))))
+
+    formatextract <- function(extraction) { 
+        names(extraction) <- c('cellindex','timestep','ndvi')
+        yjd <- substr(extraction$timestep, 10, 16)
+        extraction$year <- as.numeric(substr(yjd,0,4))
+        extraction$jd <- as.numeric(substr(yjd,5,8))
+        return(extraction)
+    }
+
+    extraction <- formatextract(extraction)
+    ggplot(extraction, aes(x=jd, y=ndvi)) + geom_line(aes(group=factor(year)));
+
+
+### Continuing
+
+    fields <- shapefile('WheatFields.shp')
+    points <- data.frame(x=fields$coords.x1,y=fields$coords.x2)
+    extraction <- melt(extract(mystack, points))
+    extraction <- formatextract(extraction)
+
+    # single page
+    pdf('~/somefile.pdf')
+    ggplot(extraction, aes(x=jd, y=ndvi)) + geom_line(aes(group=factor(year))) 
+        + facet_wrap(~ factor(cellindex))
+    dev.off()
+
+### Multipage PDF
+
+    # multi-page PDF
+    makeplot <- function(df) { 
+        print(ggplot(df, aes(x=jd, y=ndvi, color=factor(year))) +
+            geom_line(aes(group=factor(year))))
+    }
+    pdf('~/multipage.pdf')
+    d_ply(extraction, .(cellindex), makeplot)
+    dev.off()
 
 
 ### Advanced 
