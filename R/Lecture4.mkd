@@ -187,7 +187,7 @@ A good source for finding [Spatial Reference](spatialreference.org) projection i
 
 
 ### Advanced 
-[Learn X in Y minutes where X=R](Lhttp://learnxinyminutes.com/docs/r) 
+[Learn X in Y minutes where X=R](http://learnxinyminutes.com/docs/r) 
 
 
 
