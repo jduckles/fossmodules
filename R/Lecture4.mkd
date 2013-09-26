@@ -186,7 +186,7 @@ A good source for finding [Spatial Reference](spatialreference.org) projection i
     dev.off()
 
 
-### Advanced 
+### Further practice 
 [Learn X in Y minutes where X=R](http://learnxinyminutes.com/docs/r) 
 
 
