@@ -23,7 +23,6 @@ Great for raster processing in R.  Manages memory utilization by writing to temp
 
     setwd('/data/vol10/education/courses/Duckles_programming/MODIS/')
     library(raster)
-    setwd('~/tmp/MODIS')
     fname <- 'MOD09A1.A2001081.h09v05.005.2007008144140.ndvi.tif'
     myrast1 <- raster(fname)
 
@@ -70,8 +69,8 @@ Back in R:
     
     library(raster)
     setwd('/data/vol10/education/courses/Duckles_programming/MODIS/compute_ndvi')
-    b01 <- raster('MOD09A1.A2013137_b01.tif')
-    b02 <- raster('MOD09A1.A2013137_b02.tif')
+    b01 <- raster('MOD09A1.A2013137_b01.tif') * 0.0001
+    b02 <- raster('MOD09A1.A2013137_b02.tif') * 0.0001
     ndvi <- (b02 - b01) / (b01 + b02)
     ndvi_clean <- calc(ndvi, fun=function(x) { 
             x[x >= 1] <- NA; x[x <= -1] <- NA; return(x)
@@ -116,13 +115,6 @@ Extract band:
 
 [Lookup table (click +Layers)](https://lpdaac.usgs.gov/products/modis_products_table/mcd12q1)
 
-    labels <- c("water","evergreen needleleaf", "evergreen broadleaf", 
-        "deciduous needleleaf", "deciduious broadleaf", "mixed forest",
-        "closed shrubland", "open shrubland", "woody savannas",
-        "savannas", "grasslands", "permanent wetlands",
-        "croplands", "urban and built-up", "cropland/natural vegetation mosaic",
-        "snow and ice", "barren sparsely vegetated", "unclassified")
-
     colors <- c("blue","darkgreen","forestgreen","green3","green4",
         "lightgreen", "khaki4","khaki2", "darkorange3","darkorange4",
         "gray56","darkslategray","gold2","firebrick3","gold4",
@@ -135,7 +127,7 @@ Extract band:
 ### Raster reProjection
 
     # Note, this takes a long time (several minutes).
-    landcover_aea <- rasterProject(landcover, crs="+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +no_defs")
+    landcover_aea <- projectRaster(landcover, crs="+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +no_defs")
 
 A good source for finding [Spatial Reference](spatialreference.org) projection info.
 
@@ -186,10 +178,19 @@ A good source for finding [Spatial Reference](spatialreference.org) projection i
     dev.off()
 
 
+### Aggregating data
+
+A question from Nyamba yesterday, how to aggregate based on MODIS 8-day composite windows.
+
+    ndays <- 365 # change to 366 for leap years
+    myweather <- data.frame(temp=rnorm(365,80,20))
+    myweather$modisday <- rep(seq(1,ndays,by=8),each=8, length.out=ndays) 
+    aggregate(myweather,by=list(myweather$modisday), FUN=mean)
+
+
+
 ### Further practice 
 [Learn X in Y minutes where X=R](http://learnxinyminutes.com/docs/r) 
-
-
 
 
 
