@@ -1,0 +1,106 @@
+## Multiprocessing
+Python multiprocessing can be useful for running cpu-bound tasks on multi-core/multi-cpu systems.
+
+it is important to know that your script has to have a '__main__' module that can be imported by child tasks, and multiprocessing will not work interactively in the python interpreter.
+
+
+## Example Script
+
+    from multiprocessing import Pool
+    from time import time
+    import sys
+
+    K = 5000
+    def CostlyFunction(z):
+        r = 0
+        for k in xrange(1, K+2):
+            r += z ** (1 / k**1.5)
+        return r
+
+    if __name__ == '__main__':
+        currtime = time()
+        pool = Pool(int(sys.argv[1]))
+        pool.map(CostlyFunction, (i for i in xrange(1000)) )
+        print time() - currtime
+
+
+## Imports
+
+    from multiprocessing import Pool  # For multiprocessing
+    from time import time # to measure how long it takes with varied pool sizes
+    import sys # to pass in command-line arguments
+
+## Define some function that takes time
+
+    K = 5000
+    def CostlyFunction(z):
+        r = 0
+        for k in xrange(1, K+2):
+            r += z ** (1 / k**1.5)
+        return r
+
+## Set behavior for first-run of script from command line
+
+    if __name__ == '__main__':
+        currtime = time()
+        pool = Pool(int(sys.argv[1]))
+        pool.map(CostlyFunction, (i for i in xrange(1000)) )
+        print time() - currtime
+
+## All together again
+
+    from multiprocessing import Pool
+    from time import time
+    import sys
+
+    K = 5000
+    def CostlyFunction(z):
+        r = 0
+        for k in xrange(1, K+2):
+            r += z ** (1 / k**1.5)
+        return r
+
+    if __name__ == '__main__':
+        currtime = time()
+        pool = Pool(int(sys.argv[1]))
+        pool.map(CostlyFunction, (i for i in xrange(1000)) )
+        print time() - currtime
+    
+## Testing 
+
+    for i in {1..30}; do python multi.py $i; done
+    
+    2.2731628418
+    1.19126105309
+    0.809119939804
+    0.789510011673
+    0.672595977783
+    0.585538864136
+    0.514747858047
+    0.48824095726
+    0.48814702034
+    0.492212057114
+    0.496674060822
+    0.498559951782
+    0.486820936203
+    0.487945079803
+    0.49600982666
+    0.488328933716
+    0.488155841827
+    0.507418870926
+    0.563377857208
+    0.496143102646
+    0.498039007187
+    0.500524044037
+    0.539098978043
+    0.515827178955
+    0.51057100296
+    0.5022149086
+    0.50897192955
+    0.496228933334
+    0.493709087372
+    0.502773046494
+
+## Plot 
+
+![Multiprocessing](images/multiprocessing.png)

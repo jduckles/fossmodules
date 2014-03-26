@@ -1,0 +1,65 @@
+
+
+### References ###
+[Official Documentation](http://docs.python.org/2.6/)
+[Learn Python the Hard Way](http://learnpythonthehardway.org/book/)
+[Learn Python in X minutes](http://learnxinyminutes.com/docs/python/)
+[Dive into python](http://www.diveintopython.net/)
+
+
+### What is Python
+* Python is a high-level interpreted programming language.
+* It can be used with an interactive intrepreter
+* It was developped by Guido vanRossman in the late 1980s, but has really hit its stride in the last 10 years.
+
+
+### Variables
+Variables can be thought of as containers for storing data and retriving it based on its name.
+
+    >> x = 5
+    print x
+
+### Types
+
+Basic numeric types are `int` and `float`.
+
+    >> type(3)
+    <type 'int'>
+ 
+    >> float(4)
+    3.0
+
+    
+
+### Numbers
+
+    >> 2 + 2
+    4
+
+    +, -, * and / are the basic arithmetic operators
+
+### Dynamic types (duck-typing)
+
+    >> 16 / 3
+    5
+    
+    >> 16 / 3.0
+    5.333333333333333
+
+### Numbers
+
+### Strings
+
+### Lists
+
+### Data Structures
+
+
+### Last time
+* Running python
+* Writing scripts
+* Types
+* Lists
+
+### Dictionaries
+
