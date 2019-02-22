@@ -3,6 +3,7 @@ Python multiprocessing can be useful for running cpu-bound tasks on multi-core/m
 
 it is important to know that your script has to have a '__main__' module that can be imported by child tasks, and multiprocessing will not work interactively in the python interpreter.
 
+---
 
 ## Example Script
 
@@ -22,13 +23,15 @@ it is important to know that your script has to have a '__main__' module that ca
         pool = Pool(int(sys.argv[1]))
         pool.map(CostlyFunction, (i for i in xrange(1000)) )
         print time() - currtime
-
+---
 
 ## Imports
 
     from multiprocessing import Pool  # For multiprocessing
     from time import time # to measure how long it takes with varied pool sizes
     import sys # to pass in command-line arguments
+
+---
 
 ## Define some function that takes time
 
