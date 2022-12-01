@@ -1,3 +1,4 @@
+---
 latex input: mmd-memoir-header
 Title: GRASS GIS Tutorial
 Subtitle: Getting started with GRASS
@@ -12,7 +13,7 @@ Date: September 22, 2011
 Theme: keynote-gradient
 latex input: mmd-memoir-begin-doc
 latex footer: mmd-memoir-footer
-
+---
 
 # GRASS GIS Session 1 #
 
